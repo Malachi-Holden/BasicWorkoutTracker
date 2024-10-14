@@ -35,7 +35,6 @@ fun ExerciseView(
     onDaySelected: (index: Int, showCreateNewWorkout: Boolean) -> Unit
 ) {
     val exercise = exerciseViewModel.exerciseState
-//        mainViewModel.exercisesAsState[exercisekey ?: return EmptyExerciseView()]
         ?: return EmptyExerciseView()
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -132,5 +131,4 @@ fun ExerciseView(
 
 @Composable
 fun EmptyExerciseView() {
-    Text(text = "Empty haha")
 }

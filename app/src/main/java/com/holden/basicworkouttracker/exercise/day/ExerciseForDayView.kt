@@ -360,5 +360,4 @@ fun SetActionRow(
 
 @Composable
 fun EmptyDayView() {
-    Text(text = "Empty Day haha")
 }
