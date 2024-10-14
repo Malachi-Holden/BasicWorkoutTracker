@@ -1,4 +1,4 @@
-package com.holden.basicworkouttracker.exercise
+package com.holden.basicworkouttracker.exercise.day
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -43,6 +43,8 @@ import com.holden.basicworkouttracker.MainViewModel
 import com.holden.basicworkouttracker.PlatesToWeight
 import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.WeightToPlates
+import com.holden.basicworkouttracker.exercise.ExerciseViewModel
+import com.holden.basicworkouttracker.exercise.Workout
 import com.holden.basicworkouttracker.loadPlates
 import com.holden.basicworkouttracker.savePlates
 import com.holden.basicworkouttracker.util.ModalView
@@ -52,14 +54,13 @@ import com.holden.basicworkouttracker.util.singleEdge
 
 @Composable
 fun ExerciseForDayView(
-    exercisekey: String?,
-    day: Int?,
     showNewWorkoutView: Boolean,
-    mainViewModel: MainViewModel,
+    dayViewModel: DayViewModel
 ) {
-    val exercise = mainViewModel.exercisesAsState[exercisekey]
+    val exercise = dayViewModel.exerciseState
     val title = exercise?.title
-    if (day == null || title == null || exercisekey == null) return EmptyDayView()
+    val day = dayViewModel.dayIndexState
+    if (day == null || title == null) return EmptyDayView()
     val exerciseForDay = exercise.history[day]
     Box {
         var editSetIndex by remember {
@@ -90,7 +91,7 @@ fun ExerciseForDayView(
             SetListView(
                 sets = exerciseForDay.sets,
                 modifier = Modifier.padding(15.dp),
-                onDeleteSet = { mainViewModel.removeSet(exercisekey, day, it) },
+                onDeleteSet = { dayViewModel.removeSet(it) },
                 onUpdateSet = { editSetIndex = it },
                 onCopySet = {
                     copySetIndex = it
@@ -118,7 +119,7 @@ fun ExerciseForDayView(
             showAddSet = showAddSet,
             onClose = { showAddSet = false },
             onAdd = {
-                mainViewModel.addSet(exercisekey, day, it)
+                dayViewModel.addSet(it)
             }
         )
         val showEditSet = editSetIndex != null
@@ -129,7 +130,7 @@ fun ExerciseForDayView(
             showAddSet = showEditSet,
             onClose = { editSetIndex = null },
             onAdd = {
-                mainViewModel.updateSet(exercisekey, day, editSetIndex, it)
+                dayViewModel.updateSet(editSetIndex, it)
                 editSetIndex = null
             },
         )
@@ -141,7 +142,7 @@ fun ExerciseForDayView(
             showAddSet = showCopySet,
             onClose = { copySetIndex = null },
             onAdd = {
-                mainViewModel.addSet(exercisekey, day, it)
+                dayViewModel.addSet(it)
                 copySetIndex = null
             },
         )
@@ -359,5 +360,5 @@ fun SetActionRow(
 
 @Composable
 fun EmptyDayView() {
-
+    Text(text = "Empty Day haha")
 }
