@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import com.holden.basicworkouttracker.exercise.day.DayViewModel
 import com.holden.basicworkouttracker.util.OrderedMap
+import com.holden.basicworkouttracker.util.bindNullable
 import com.holden.basicworkouttracker.util.removed
 import com.holden.basicworkouttracker.util.replaced
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,50 +32,27 @@ class ExerciseViewModel(
         @Composable
         get() = _deleteIndex.collectAsState().value
 
-    fun addDay(day: ExerciseForDay) {
-        setExercises(addDay(
-            exercises.value,
-            exerciseKey.value ?: return,
-            day
-        ))
-    }
-
-    fun removeDay(dayIndex: Int) {
-        setExercises(removeDay(
-            exercises.value,
-            exerciseKey.value ?: return,
-            dayIndex
-        ))
-        _deleteIndex.value = null
-    }
-
     fun addDay(
-        exercises: OrderedMap<String, Exercise>,
-        exerciseKey: String,
         day: ExerciseForDay
-    ): OrderedMap<String, Exercise> {
-        val exercise = exercises[exerciseKey] ?: return exercises
-        return exercises.replace(
+    ) = bindNullable {
+        val exercise = exercises.value[exerciseKey.value].bind()
+        exercises.value.replace(
             exercise.copy(history = listOf(day) + exercise.history),
-            exerciseKey
+            exerciseKey.value.bind()
         )
-    }
+    }?.let(setExercises)
 
     fun removeDay(
-        exercises: OrderedMap<String, Exercise>,
-        exerciseKey: String,
         dayIndex: Int
-    ): OrderedMap<String, Exercise> {
-        val exercise = exercises[exerciseKey] ?: return exercises
-        return exercises.replace(
+    ) = bindNullable {
+        val exercise = exercises.value[exerciseKey.value].bind()
+        exercises.value.replace(
             exercise.copy(
                 history = exercise.history.removed(dayIndex)
             ),
-            exerciseKey
+            exerciseKey.value.bind()
         )
-    }
-
-
+    }?.let(setExercises)
 
     fun dayClicked(dayIndex: Int) {
         val showDelete = _deleteIndex.value == dayIndex
