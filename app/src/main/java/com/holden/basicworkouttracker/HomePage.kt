@@ -1,7 +1,7 @@
 package com.holden.basicworkouttracker
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,18 +20,16 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.util.ModalView
 import com.holden.basicworkouttracker.util.Side
-import com.holden.basicworkouttracker.util.singleEdge
 import com.holden.basicworkouttracker.util.items
+import com.holden.basicworkouttracker.util.singleEdge
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -43,20 +41,16 @@ fun HomePage(
         .fillMaxSize()
         .padding(5.dp)) {
         val exercises = mainViewModel.exercisesAsState
-        var deleteKey by remember {
-            mutableStateOf<String?>(null)
-        }
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(exercises) { (key, exercise) ->
                 exercise ?: return@items
-                val showDelete = deleteKey == key
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .combinedClickable(onClick = {}, onLongClick = {
-                            deleteKey = if (showDelete) null else key
-                        })
+                        .clickable {
+                            mainViewModel.rowClicked(key)
+                        }
                 ) {
                     Button(
                         onClick = { showExercise(key) },
@@ -90,7 +84,7 @@ fun HomePage(
 
                         }
                     }
-                    if (showDelete) {
+                    if (mainViewModel.deleteKey == key) {
                         IconButton(onClick = { mainViewModel.removeExercise(key) }) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
@@ -103,20 +97,17 @@ fun HomePage(
             }
         }
 
-        var showAddExercise by remember {
-            mutableStateOf(false)
-        }
-        FloatingActionButton(onClick = { showAddExercise = true }, modifier = Modifier
+        FloatingActionButton(onClick = mainViewModel::addButtonClicked, modifier = Modifier
             .align(Alignment.BottomEnd)
             .padding(20.dp)) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add exercise")
         }
         AddExercisePopup(
-            showPopup = showAddExercise,
+            showPopup = mainViewModel.showAddExercise,
             onExerciseCreated = {
                 mainViewModel.addExercise(it)
             },
-            onPopupClosed = { showAddExercise = false }
+            onPopupClosed = mainViewModel::onPopupClosed
         )
     }
 }

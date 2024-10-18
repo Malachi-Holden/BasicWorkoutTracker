@@ -29,9 +29,31 @@ class MainViewModel(
         ::updateExercises
     )
 
+    val _deleteKey = MutableStateFlow<String?>(null)
+    val deleteKey: String?
+        @Composable
+        get() = _deleteKey.collectAsState().value
+
+    private val _showAddExercise = MutableStateFlow(false)
+    val showAddExercise: Boolean
+        @Composable
+        get() = _showAddExercise.collectAsState().value
+
+    fun rowClicked(key: String) {
+        _deleteKey.value = if (_deleteKey.value == key) null else key
+    }
+
     fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
         exercisesFlow.value = newExercises
         saveExercises(newExercises)
+    }
+
+    fun addButtonClicked() {
+        _showAddExercise.value = true
+    }
+
+    fun onPopupClosed() {
+        _showAddExercise.value = false
     }
 
     /**
