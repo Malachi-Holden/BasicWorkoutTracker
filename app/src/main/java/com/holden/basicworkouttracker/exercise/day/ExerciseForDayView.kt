@@ -127,11 +127,11 @@ fun ExerciseForDayView(
         )
         ModalView(visible = dayViewModel.showCalculator, onClose = dayViewModel::hideCalculator) {
             val context = LocalContext.current
-            val persistedPlates = context.loadPlates(LOCAL_PLATES)
+            val persistedPlates = dayViewModel.loadPersistedPlates()
             WeightToPlates(
                 dayViewModel.weightForCalculator,
-                persistedPlates?.second ?: listOf(45.0, 35.0, 25.0, 10.0, 5.0, 2.5),
-                persistedPlates?.first ?: 45.0,
+                persistedPlates.second,
+                persistedPlates.first,
                 savePlates = { bar, weights ->
                     context.savePlates(LOCAL_PLATES, weights, bar)
                 }

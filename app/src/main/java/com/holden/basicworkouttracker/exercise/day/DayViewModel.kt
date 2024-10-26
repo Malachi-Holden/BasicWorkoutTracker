@@ -2,8 +2,11 @@ package com.holden.basicworkouttracker.exercise.day
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.platform.LocalContext
+import com.holden.basicworkouttracker.LOCAL_PLATES
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.Workout
+import com.holden.basicworkouttracker.loadPlates
 import com.holden.basicworkouttracker.util.OrderedMap
 import com.holden.basicworkouttracker.util.bindNullable
 import com.holden.basicworkouttracker.util.removed
@@ -125,4 +128,8 @@ class DayViewModel(
     }?.let(setExercises).also {
         _editSetIndex.value = null
     }
+
+    @Composable
+    fun loadPersistedPlates() = LocalContext.current.loadPlates(LOCAL_PLATES)
+        ?: (45.0 to listOf(45.0, 35.0, 25.0, 10.0, 5.0, 2.5))
 }
