@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.holden.basicworkouttracker.exercise.day.SetListView
+import com.holden.basicworkouttracker.ui.theme.DefaultButton
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -82,7 +83,7 @@ fun ExerciseView(
                             .fillMaxWidth()
                             .clickable { exerciseViewModel.dayClicked(dayIndex) }
                     ) {
-                        Button(
+                        DefaultButton(
                             modifier = Modifier.fillMaxWidth(.6f),
                             onClick = { onDaySelected(dayIndex, false) }
                         ) {

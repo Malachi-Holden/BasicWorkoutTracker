@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.holden.basicworkouttracker.exercise.Exercise
+import com.holden.basicworkouttracker.ui.theme.DefaultButton
 import com.holden.basicworkouttracker.util.ModalView
 import com.holden.basicworkouttracker.util.Side
 import com.holden.basicworkouttracker.util.items
@@ -52,7 +53,7 @@ fun HomePage(
                             mainViewModel.rowClicked(key)
                         }
                 ) {
-                    Button(
+                    DefaultButton(
                         onClick = { showExercise(key) },
                         modifier = Modifier.fillMaxWidth(.5f)
                     ) {
@@ -126,10 +127,10 @@ fun AddExercisePopup(
             }
             TextField(value = title, onValueChange = setTitle, placeholder = { Text(text = "Name") })
             Row {
-                Button(onClick = onPopupClosed) {
+                DefaultButton(onClick = onPopupClosed) {
                     Text(text = "Cancel")
                 }
-                Button(onClick = {
+                DefaultButton(onClick = {
                     onExerciseCreated(Exercise(title, listOf()))
                     onPopupClosed()
                 }) {

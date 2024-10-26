@@ -48,6 +48,7 @@ import com.holden.basicworkouttracker.exercise.ExerciseViewModel
 import com.holden.basicworkouttracker.exercise.Workout
 import com.holden.basicworkouttracker.loadPlates
 import com.holden.basicworkouttracker.savePlates
+import com.holden.basicworkouttracker.ui.theme.DefaultButton
 import com.holden.basicworkouttracker.util.ModalView
 import com.holden.basicworkouttracker.util.Side
 import com.holden.basicworkouttracker.util.singleEdge
@@ -318,7 +319,7 @@ fun SetActionRow(
                 IconButton(onClick = onCopySet) {
                     Icon(imageVector = ImageVector.vectorResource(id = R.drawable.copy), contentDescription = "Copy")
                 }
-                Button(
+                DefaultButton(
                     onClick = onCalculatePlates
                 ) {
                     Text(text = "Calculate plates")
