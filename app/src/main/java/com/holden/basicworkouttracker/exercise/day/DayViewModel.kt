@@ -15,7 +15,8 @@ class DayViewModel(
     val exerciseKey: MutableStateFlow<String?>,
     val dayIndex: Int?,
     val exercises: StateFlow<OrderedMap<String, Exercise>>,
-    val setExercises: (OrderedMap<String, Exercise>) -> Unit
+    val setExercises: (OrderedMap<String, Exercise>) -> Unit,
+    val showNewWorkout: Boolean
 ) {
     val exerciseState: Exercise?
         @Composable
@@ -24,7 +25,8 @@ class DayViewModel(
 
     private val _editSetIndex = MutableStateFlow<Int?>(null)
     private val _copySetIndex = MutableStateFlow<Int?>(null)
-    val showAddSet = MutableStateFlow(false)
+    val showAddSet = MutableStateFlow(showNewWorkout)
+    private val _weightForCalculator = MutableStateFlow<Double?>(null)
     val showEditSet: Boolean
     @Composable
     get() = _editSetIndex.collectAsState().value != null
@@ -46,6 +48,14 @@ class DayViewModel(
         val exerciseHistory = exerciseState?.history
         return bindNullable { exerciseHistory.bind()[dayIndex.bind()].sets[_copySetIndex.value.bind()] }
     }
+
+    val weightForCalculator: Double?
+    @Composable
+    get() = _weightForCalculator.collectAsState().value
+
+    val showCalculator: Boolean
+    @Composable
+    get() = weightForCalculator != null
 
     fun addSet(
         set: Workout
@@ -76,6 +86,14 @@ class DayViewModel(
     fun closeCopySetPopup() {
         _copySetIndex.value = null
     }
+
+    fun onShowCalculator(weight: Double?) {
+        _weightForCalculator.value = weight
+    }
+    fun hideCalculator() {
+        _weightForCalculator.value = null
+    }
+
 
     fun removeSet(
         setIndex: Int

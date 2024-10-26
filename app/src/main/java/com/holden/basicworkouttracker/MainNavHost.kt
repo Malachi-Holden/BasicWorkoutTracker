@@ -22,9 +22,9 @@ fun MainNavHost(
 ) {
     val exerciseViewModel = mainViewModel.exerciseViewModel
 
-    var showCreateWorkoutView by remember {
-        mutableStateOf(false)
-    }
+//    var showCreateWorkoutView by remember {
+//        mutableStateOf(false)
+//    }
 
     var dayIndex by remember {
         mutableStateOf<Int?>(null)
@@ -40,17 +40,14 @@ fun MainNavHost(
             ExerciseView(
                 exerciseViewModel = exerciseViewModel,
                 onDaySelected = { index, showCreateWorkout ->
-                    showCreateWorkoutView = showCreateWorkout
+                    exerciseViewModel.showNewWorkoutOnNavigate = showCreateWorkout
                     dayIndex = index
                     navController.navigate(Nav.Day.name)
                 }
             )
         }
         composable(Nav.Day.name) {
-            ExerciseForDayView(
-                dayViewModel = exerciseViewModel.dayViewModel(dayIndex),
-                showNewWorkoutView = showCreateWorkoutView
-            )
+            ExerciseForDayView(exerciseViewModel.dayViewModel(dayIndex))
         }
     }
 }

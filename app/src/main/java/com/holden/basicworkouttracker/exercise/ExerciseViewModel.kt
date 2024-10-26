@@ -18,12 +18,7 @@ class ExerciseViewModel(
 
     private val _deleteIndex: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    fun dayViewModel(dayIndex: Int?) = DayViewModel(
-        exerciseKey,
-        dayIndex,
-        exercises,
-        setExercises
-    )
+    var showNewWorkoutOnNavigate = false
     val exerciseState: Exercise?
         @Composable
         get() = exercises.collectAsState().value[exerciseKey.collectAsState().value]
@@ -32,6 +27,13 @@ class ExerciseViewModel(
         @Composable
         get() = _deleteIndex.collectAsState().value
 
+    fun dayViewModel(dayIndex: Int?) = DayViewModel(
+        exerciseKey,
+        dayIndex,
+        exercises,
+        setExercises,
+        showNewWorkoutOnNavigate
+    )
     fun addDay(
         day: ExerciseForDay
     ) = bindNullable {

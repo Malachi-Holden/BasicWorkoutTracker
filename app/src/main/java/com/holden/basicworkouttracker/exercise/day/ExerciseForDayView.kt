@@ -63,9 +63,6 @@ fun ExerciseForDayView(
     if (dayViewModel.dayIndex == null || title == null) return EmptyDayView()
     val exerciseForDay = exercise.history[dayViewModel.dayIndex]
     Box {
-        var weightForCalculator by remember {
-            mutableStateOf<Double?>(null)
-        }
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -85,10 +82,10 @@ fun ExerciseForDayView(
             SetListView(
                 sets = exerciseForDay.sets,
                 modifier = Modifier.padding(15.dp),
-                onDeleteSet = { dayViewModel.removeSet(it) },
+                onDeleteSet = dayViewModel::removeSet,
                 onUpdateSet = dayViewModel::showUpdateSet,
                 onCopySet = dayViewModel::showCopySet,
-                onShowCalculator = { weightForCalculator = it }
+                onShowCalculator = dayViewModel::onShowCalculator
             )
         }
         FloatingActionButton(
@@ -107,9 +104,7 @@ fun ExerciseForDayView(
             confirmButtonTitle = "Add",
             showAddSet = dayViewModel.showAddSet.collectAsState().value,
             onClose = { dayViewModel.showAddSet.value = false },
-            onAdd = {
-                dayViewModel.addSet(it)
-            }
+            onAdd = dayViewModel::addSet
         )
         AddSetPopup(
             title = "Update Set",
@@ -130,11 +125,11 @@ fun ExerciseForDayView(
                 dayViewModel.closeCopySetPopup()
             },
         )
-        ModalView(visible = weightForCalculator != null, onClose = { weightForCalculator = null }) {
+        ModalView(visible = dayViewModel.showCalculator, onClose = dayViewModel::hideCalculator) {
             val context = LocalContext.current
             val persistedPlates = context.loadPlates(LOCAL_PLATES)
             WeightToPlates(
-                weightForCalculator,
+                dayViewModel.weightForCalculator,
                 persistedPlates?.second ?: listOf(45.0, 35.0, 25.0, 10.0, 5.0, 2.5),
                 persistedPlates?.first ?: 45.0,
                 savePlates = { bar, weights ->
@@ -143,7 +138,6 @@ fun ExerciseForDayView(
             )
         }
     }
-
 }
 
 @Composable
