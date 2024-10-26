@@ -18,9 +18,9 @@ class ExerciseViewModel(
 
     private val _deleteIndex: MutableStateFlow<Int?> = MutableStateFlow(null)
 
-    val dayViewModel = DayViewModel(
+    fun dayViewModel(dayIndex: Int?) = DayViewModel(
         exerciseKey,
-        MutableStateFlow(null),
+        dayIndex,
         exercises,
         setExercises
     )

@@ -75,7 +75,6 @@ fun ExerciseView(
             ) {
                 items(exercise.history.size) { dayIndex ->
                     val exerciseForDay = exercise.history[dayIndex]
-                    val showDelete = deleteIndex == dayIndex
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start,
@@ -93,7 +92,7 @@ fun ExerciseView(
                             )
                             Text(text = "${exerciseForDay.sets.size} sets")
                         }
-                        if (showDelete) {
+                        if (deleteIndex == dayIndex) {
                             IconButton(onClick = {
                                 exerciseViewModel.removeDay(dayIndex)
                             }

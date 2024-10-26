@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,21 +55,13 @@ import com.holden.basicworkouttracker.util.singleEdge
 
 @Composable
 fun ExerciseForDayView(
-    showNewWorkoutView: Boolean,
     dayViewModel: DayViewModel
 ) {
     val exercise = dayViewModel.exerciseState
     val title = exercise?.title
-    val day = dayViewModel.dayIndexState
-    if (day == null || title == null) return EmptyDayView()
-    val exerciseForDay = exercise.history[day]
+    if (dayViewModel.dayIndex == null || title == null) return EmptyDayView()
+    val exerciseForDay = exercise.history[dayViewModel.dayIndex]
     Box {
-        var editSetIndex by remember {
-            mutableStateOf<Int?>(null)
-        }
-        var copySetIndex by remember {
-            mutableStateOf<Int?>(null)
-        }
         var weightForCalculator by remember {
             mutableStateOf<Double?>(null)
         }
@@ -92,21 +85,16 @@ fun ExerciseForDayView(
                 sets = exerciseForDay.sets,
                 modifier = Modifier.padding(15.dp),
                 onDeleteSet = { dayViewModel.removeSet(it) },
-                onUpdateSet = { editSetIndex = it },
-                onCopySet = {
-                    copySetIndex = it
-                },
+                onUpdateSet = dayViewModel::showUpdateSet,
+                onCopySet = dayViewModel::showCopySet,
                 onShowCalculator = { weightForCalculator = it }
             )
-        }
-        var showAddSet by remember {
-            mutableStateOf(showNewWorkoutView)
         }
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(20.dp),
-            onClick = { showAddSet = true }
+            onClick = { dayViewModel.showAddSet.value = true }
         ) {
             Row(modifier = Modifier.padding(10.dp)) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add set")
@@ -116,34 +104,29 @@ fun ExerciseForDayView(
         AddSetPopup(
             title = "Add Set",
             confirmButtonTitle = "Add",
-            showAddSet = showAddSet,
-            onClose = { showAddSet = false },
+            showAddSet = dayViewModel.showAddSet.collectAsState().value,
+            onClose = { dayViewModel.showAddSet.value = false },
             onAdd = {
                 dayViewModel.addSet(it)
             }
         )
-        val showEditSet = editSetIndex != null
         AddSetPopup(
             title = "Update Set",
             confirmButtonTitle = "Update",
-            initialWorkout = editSetIndex?.let { exercise.history[day].sets[it] },
-            showAddSet = showEditSet,
-            onClose = { editSetIndex = null },
-            onAdd = {
-                dayViewModel.updateSet(editSetIndex, it)
-                editSetIndex = null
-            },
+            initialWorkout = dayViewModel.workoutToUpdate,
+            showAddSet = dayViewModel.showEditSet,
+            onClose = dayViewModel::closeUpdateSetPopup,
+            onAdd = dayViewModel::updateSet,
         )
-        val showCopySet = copySetIndex != null
         AddSetPopup(
             title = "Copy Set",
             confirmButtonTitle = "Copy",
-            initialWorkout = copySetIndex?.let { exercise.history[day].sets[it] },
-            showAddSet = showCopySet,
-            onClose = { copySetIndex = null },
+            initialWorkout = dayViewModel.workoutToCopy,
+            showAddSet = dayViewModel.showCopySet,
+            onClose = dayViewModel::closeCopySetPopup,
             onAdd = {
                 dayViewModel.addSet(it)
-                copySetIndex = null
+                dayViewModel.closeCopySetPopup()
             },
         )
         ModalView(visible = weightForCalculator != null, onClose = { weightForCalculator = null }) {
@@ -356,7 +339,6 @@ fun SetActionRow(
         }
     }
 }
-
 
 @Composable
 fun EmptyDayView() {
