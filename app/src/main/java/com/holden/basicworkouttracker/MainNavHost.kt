@@ -8,7 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.holden.basicworkouttracker.exercise.ExerciseForDayView
+import com.holden.basicworkouttracker.exercise.day.ExerciseForDayView
 import com.holden.basicworkouttracker.exercise.ExerciseView
 
 enum class Nav {
@@ -20,40 +20,34 @@ fun MainNavHost(
     mainViewModel: MainViewModel,
     navController: NavHostController
 ) {
-    var currentExercise by remember {
-        mutableStateOf<String?>(null)
-    }
-    var currentDayIndex by remember {
+    val exerciseViewModel = mainViewModel.exerciseViewModel
+
+//    var showCreateWorkoutView by remember {
+//        mutableStateOf(false)
+//    }
+
+    var dayIndex by remember {
         mutableStateOf<Int?>(null)
-    }
-    var showCreateWorkoutView by remember {
-        mutableStateOf(false)
     }
     NavHost(navController = navController, startDestination = Nav.Home.name) {
         composable(Nav.Home.name) {
             HomePage(mainViewModel = mainViewModel, showExercise = {
-                currentExercise = it
+                exerciseViewModel.exerciseKey.value = it
                 navController.navigate(Nav.Exercise.name)
             })
         }
         composable(Nav.Exercise.name) {
             ExerciseView(
-                mainViewModel = mainViewModel,
-                exercisekey = currentExercise,
+                exerciseViewModel = exerciseViewModel,
                 onDaySelected = { index, showCreateWorkout ->
-                    showCreateWorkoutView = showCreateWorkout
-                    currentDayIndex = index
+                    exerciseViewModel.showNewWorkoutOnNavigate = showCreateWorkout
+                    dayIndex = index
                     navController.navigate(Nav.Day.name)
                 }
             )
         }
         composable(Nav.Day.name) {
-            ExerciseForDayView(
-                exercisekey = currentExercise,
-                day = currentDayIndex,
-                mainViewModel = mainViewModel,
-                showNewWorkoutView = showCreateWorkoutView
-            )
+            ExerciseForDayView(exerciseViewModel.dayViewModel(dayIndex))
         }
     }
 }

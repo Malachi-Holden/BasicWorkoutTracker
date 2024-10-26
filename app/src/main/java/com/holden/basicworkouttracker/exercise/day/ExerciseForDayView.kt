@@ -1,4 +1,4 @@
-package com.holden.basicworkouttracker.exercise
+package com.holden.basicworkouttracker.exercise.day
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -25,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +44,11 @@ import com.holden.basicworkouttracker.MainViewModel
 import com.holden.basicworkouttracker.PlatesToWeight
 import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.WeightToPlates
+import com.holden.basicworkouttracker.exercise.ExerciseViewModel
+import com.holden.basicworkouttracker.exercise.Workout
 import com.holden.basicworkouttracker.loadPlates
 import com.holden.basicworkouttracker.savePlates
+import com.holden.basicworkouttracker.ui.theme.DefaultButton
 import com.holden.basicworkouttracker.util.ModalView
 import com.holden.basicworkouttracker.util.Side
 import com.holden.basicworkouttracker.util.singleEdge
@@ -52,25 +56,13 @@ import com.holden.basicworkouttracker.util.singleEdge
 
 @Composable
 fun ExerciseForDayView(
-    exercisekey: String?,
-    day: Int?,
-    showNewWorkoutView: Boolean,
-    mainViewModel: MainViewModel,
+    dayViewModel: DayViewModel
 ) {
-    val exercise = mainViewModel.exercisesAsState[exercisekey]
+    val exercise = dayViewModel.exerciseState
     val title = exercise?.title
-    if (day == null || title == null || exercisekey == null) return EmptyDayView()
-    val exerciseForDay = exercise.history[day]
+    if (dayViewModel.dayIndex == null || title == null) return EmptyDayView()
+    val exerciseForDay = exercise.history[dayViewModel.dayIndex]
     Box {
-        var editSetIndex by remember {
-            mutableStateOf<Int?>(null)
-        }
-        var copySetIndex by remember {
-            mutableStateOf<Int?>(null)
-        }
-        var weightForCalculator by remember {
-            mutableStateOf<Double?>(null)
-        }
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -90,22 +82,17 @@ fun ExerciseForDayView(
             SetListView(
                 sets = exerciseForDay.sets,
                 modifier = Modifier.padding(15.dp),
-                onDeleteSet = { mainViewModel.removeSet(exercisekey, day, it) },
-                onUpdateSet = { editSetIndex = it },
-                onCopySet = {
-                    copySetIndex = it
-                },
-                onShowCalculator = { weightForCalculator = it }
+                onDeleteSet = dayViewModel::removeSet,
+                onUpdateSet = dayViewModel::showUpdateSet,
+                onCopySet = dayViewModel::showCopySet,
+                onShowCalculator = dayViewModel::onShowCalculator
             )
-        }
-        var showAddSet by remember {
-            mutableStateOf(showNewWorkoutView)
         }
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(20.dp),
-            onClick = { showAddSet = true }
+            onClick = { dayViewModel.showAddSet.value = true }
         ) {
             Row(modifier = Modifier.padding(10.dp)) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add set")
@@ -115,50 +102,42 @@ fun ExerciseForDayView(
         AddSetPopup(
             title = "Add Set",
             confirmButtonTitle = "Add",
-            showAddSet = showAddSet,
-            onClose = { showAddSet = false },
-            onAdd = {
-                mainViewModel.addSet(exercisekey, day, it)
-            }
+            showAddSet = dayViewModel.showAddSet.collectAsState().value,
+            onClose = { dayViewModel.showAddSet.value = false },
+            onAdd = dayViewModel::addSet
         )
-        val showEditSet = editSetIndex != null
         AddSetPopup(
             title = "Update Set",
             confirmButtonTitle = "Update",
-            initialWorkout = editSetIndex?.let { exercise.history[day].sets[it] },
-            showAddSet = showEditSet,
-            onClose = { editSetIndex = null },
-            onAdd = {
-                mainViewModel.updateSet(exercisekey, day, editSetIndex, it)
-                editSetIndex = null
-            },
+            initialWorkout = dayViewModel.workoutToUpdate,
+            showAddSet = dayViewModel.showEditSet,
+            onClose = dayViewModel::closeUpdateSetPopup,
+            onAdd = dayViewModel::updateSet,
         )
-        val showCopySet = copySetIndex != null
         AddSetPopup(
             title = "Copy Set",
             confirmButtonTitle = "Copy",
-            initialWorkout = copySetIndex?.let { exercise.history[day].sets[it] },
-            showAddSet = showCopySet,
-            onClose = { copySetIndex = null },
+            initialWorkout = dayViewModel.workoutToCopy,
+            showAddSet = dayViewModel.showCopySet,
+            onClose = dayViewModel::closeCopySetPopup,
             onAdd = {
-                mainViewModel.addSet(exercisekey, day, it)
-                copySetIndex = null
+                dayViewModel.addSet(it)
+                dayViewModel.closeCopySetPopup()
             },
         )
-        ModalView(visible = weightForCalculator != null, onClose = { weightForCalculator = null }) {
+        ModalView(visible = dayViewModel.showCalculator, onClose = dayViewModel::hideCalculator) {
             val context = LocalContext.current
-            val persistedPlates = context.loadPlates(LOCAL_PLATES)
+            val persistedPlates = dayViewModel.loadPersistedPlates()
             WeightToPlates(
-                weightForCalculator,
-                persistedPlates?.second ?: listOf(45.0, 35.0, 25.0, 10.0, 5.0, 2.5),
-                persistedPlates?.first ?: 45.0,
+                dayViewModel.weightForCalculator,
+                persistedPlates.second,
+                persistedPlates.first,
                 savePlates = { bar, weights ->
                     context.savePlates(LOCAL_PLATES, weights, bar)
                 }
             )
         }
     }
-
 }
 
 @Composable
@@ -334,7 +313,7 @@ fun SetActionRow(
                 IconButton(onClick = onCopySet) {
                     Icon(imageVector = ImageVector.vectorResource(id = R.drawable.copy), contentDescription = "Copy")
                 }
-                Button(
+                DefaultButton(
                     onClick = onCalculatePlates
                 ) {
                     Text(text = "Calculate plates")
@@ -356,8 +335,6 @@ fun SetActionRow(
     }
 }
 
-
 @Composable
 fun EmptyDayView() {
-
 }

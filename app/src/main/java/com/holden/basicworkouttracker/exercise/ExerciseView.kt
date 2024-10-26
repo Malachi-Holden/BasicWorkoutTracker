@@ -2,7 +2,7 @@ package com.holden.basicworkouttracker.exercise
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,24 +22,20 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.holden.basicworkouttracker.MainViewModel
+import com.holden.basicworkouttracker.exercise.day.SetListView
+import com.holden.basicworkouttracker.ui.theme.DefaultButton
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseView(
-    exercisekey: String?,
-    mainViewModel: MainViewModel,
+    exerciseViewModel: ExerciseViewModel,
     onDaySelected: (index: Int, showCreateNewWorkout: Boolean) -> Unit
 ) {
-    val exercise = mainViewModel.exercisesAsState[exercisekey ?: return EmptyExerciseView()]
+    val exercise = exerciseViewModel.exerciseState
         ?: return EmptyExerciseView()
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -67,7 +63,6 @@ fun ExerciseView(
                         fontWeight = FontWeight.Bold
                     )
                 }
-
             }
 
             Text(
@@ -75,28 +70,20 @@ fun ExerciseView(
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = 15.dp, top = 15.dp)
             )
-            var deleteIndex by remember {
-                mutableStateOf<Int?>(null)
-            }
+            val deleteIndex = exerciseViewModel.deleteIndex
             LazyColumn(
                 modifier = Modifier.padding(start = 15.dp)
             ) {
                 items(exercise.history.size) { dayIndex ->
                     val exerciseForDay = exercise.history[dayIndex]
-                    val showDelete = deleteIndex == dayIndex
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.Start,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .combinedClickable(
-                                onClick = {},
-                                onLongClick = {
-                                    deleteIndex = if (showDelete) null else dayIndex
-                                }
-                            )
+                            .clickable { exerciseViewModel.dayClicked(dayIndex) }
                     ) {
-                        Button(
+                        DefaultButton(
                             modifier = Modifier.fillMaxWidth(.6f),
                             onClick = { onDaySelected(dayIndex, false) }
                         ) {
@@ -106,10 +93,9 @@ fun ExerciseView(
                             )
                             Text(text = "${exerciseForDay.sets.size} sets")
                         }
-                        if (showDelete) {
+                        if (deleteIndex == dayIndex) {
                             IconButton(onClick = {
-                                mainViewModel.removeDay(exercisekey, dayIndex)
-                                deleteIndex = null
+                                exerciseViewModel.removeDay(dayIndex)
                             }
                             ) {
                                 Icon(
@@ -122,13 +108,14 @@ fun ExerciseView(
                 }
             }
         }
+
         FloatingActionButton(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(20.dp),
             onClick = {
                 val day = ExerciseForDay(currentDate(), listOf())
-                mainViewModel.addDay(exercisekey, day)
+                exerciseViewModel.addDay(day)
                 onDaySelected(0, true)
             }
         ) {
@@ -144,5 +131,4 @@ fun ExerciseView(
 
 @Composable
 fun EmptyExerciseView() {
-
 }

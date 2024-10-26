@@ -5,6 +5,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseForDay
+import com.holden.basicworkouttracker.exercise.ExerciseViewModel
 import com.holden.basicworkouttracker.exercise.Workout
 import com.holden.basicworkouttracker.util.OrderedMap
 import com.holden.basicworkouttracker.util.removed
@@ -22,9 +23,37 @@ class MainViewModel(
         @Composable
         get() = exercisesFlow.collectAsState().value
 
+    val exerciseViewModel: ExerciseViewModel = ExerciseViewModel(
+        MutableStateFlow(null),
+        exercisesFlow,
+        ::updateExercises
+    )
+
+    val _deleteKey = MutableStateFlow<String?>(null)
+    val deleteKey: String?
+        @Composable
+        get() = _deleteKey.collectAsState().value
+
+    private val _showAddExercise = MutableStateFlow(false)
+    val showAddExercise: Boolean
+        @Composable
+        get() = _showAddExercise.collectAsState().value
+
+    fun rowClicked(key: String) {
+        _deleteKey.value = if (_deleteKey.value == key) null else key
+    }
+
     fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
         exercisesFlow.value = newExercises
         saveExercises(newExercises)
+    }
+
+    fun addButtonClicked() {
+        _showAddExercise.value = true
+    }
+
+    fun onPopupClosed() {
+        _showAddExercise.value = false
     }
 
     /**
@@ -41,74 +70,6 @@ class MainViewModel(
     fun removeExercise(exerciseKey: String) {
         updateExercises(
             exercisesFlow.value.remove(exerciseKey)
-        )
-    }
-
-    fun addDay(exerciseKey: String, day: ExerciseForDay) {
-        val exercise = exercisesFlow.value[exerciseKey] ?: return
-        updateExercises(
-            exercisesFlow.value.replace(
-                exercise.copy(history = listOf(day) + exercise.history),
-                exerciseKey
-            )
-        )
-    }
-
-    fun removeDay(exerciseKey: String, dayIndex: Int) {
-        val exercise = exercisesFlow.value[exerciseKey] ?: return
-        updateExercises(
-            exercisesFlow.value.replace(
-                exercise.copy(
-                    history = exercise.history.removed(dayIndex)
-                ),
-                exerciseKey
-            )
-        )
-    }
-
-    fun addSet(exerciseKey: String, day: Int, set: Workout) {
-        val exercise = exercisesFlow.value[exerciseKey] ?: return
-        val exerciseForDay = exercise.history[day]
-        updateExercises(
-            exercisesFlow.value.replace(
-                exercise.copy(
-                    history = exercise.history.replaced(day, exerciseForDay.copy(
-                        sets = exerciseForDay.sets + set
-                    ))
-                ),
-                exerciseKey
-            )
-        )
-    }
-
-    fun updateSet(exerciseKey: String, day: Int, setIndex: Int?, newSet: Workout) {
-        setIndex ?: return
-        val exercise = exercisesFlow.value[exerciseKey] ?: return
-        val exerciseForDay = exercise.history[day]
-        updateExercises(
-            exercisesFlow.value.replace(
-                exercise.copy(
-                    history = exercise.history.replaced(day, exerciseForDay.copy(
-                        sets = exerciseForDay.sets.replaced(setIndex, newSet)
-                    ))
-                ),
-                exerciseKey
-            )
-        )
-    }
-
-    fun removeSet(exerciseKey: String, day: Int, setIndex: Int) {
-        val exercise = exercisesFlow.value[exerciseKey] ?: return
-        val exerciseForDay = exercise.history[day]
-        updateExercises(
-            exercisesFlow.value.replace(
-                exercise.copy(
-                    history = exercise.history.replaced(day, exerciseForDay.copy(
-                        sets = exerciseForDay.sets.removed(setIndex)
-                    ))
-                ),
-                exerciseKey
-            )
         )
     }
 }
