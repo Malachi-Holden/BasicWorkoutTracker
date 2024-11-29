@@ -4,12 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import com.holden.basicworkouttracker.exercise.Exercise
-import com.holden.basicworkouttracker.exercise.ExerciseForDay
 import com.holden.basicworkouttracker.exercise.ExerciseViewModel
-import com.holden.basicworkouttracker.exercise.Workout
 import com.holden.basicworkouttracker.util.OrderedMap
-import com.holden.basicworkouttracker.util.removed
-import com.holden.basicworkouttracker.util.replaced
+import com.holden.basicworkouttracker.util.swap
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.UUID
 
@@ -29,10 +26,10 @@ class MainViewModel(
         ::updateExercises
     )
 
-    val _deleteKey = MutableStateFlow<String?>(null)
-    val deleteKey: String?
+    val _editKey = MutableStateFlow<String?>(null)
+    val editKey: String?
         @Composable
-        get() = _deleteKey.collectAsState().value
+        get() = _editKey.collectAsState().value
 
     private val _showAddExercise = MutableStateFlow(false)
     val showAddExercise: Boolean
@@ -40,7 +37,7 @@ class MainViewModel(
         get() = _showAddExercise.collectAsState().value
 
     fun rowClicked(key: String) {
-        _deleteKey.value = if (_deleteKey.value == key) null else key
+        _editKey.value = if (_editKey.value == key) null else key
     }
 
     fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
@@ -70,6 +67,22 @@ class MainViewModel(
     fun removeExercise(exerciseKey: String) {
         updateExercises(
             exercisesFlow.value.remove(exerciseKey)
+        )
+    }
+
+    fun swapExercises(startIndex: Int, endIndex: Int) {
+//        val (beforeUid, beforeItem) = exercisesFlow.value.getAtIndex(startIndex)
+//        val (afterUid, afterItem) = exercisesFlow.value.getAtIndex(endIndex)
+//        if (beforeItem == null || afterItem == null) return
+        updateExercises(
+            exercisesFlow.value.swap(startIndex, endIndex)
+//                .toPairs()
+//                .toMutableList()
+//                .apply {
+//                    set(startIndex, afterUid to afterItem)
+//                    set(endIndex, beforeUid to beforeItem)
+//                }
+//                .toOrderedMap()
         )
     }
 }
