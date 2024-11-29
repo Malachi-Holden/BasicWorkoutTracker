@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -131,9 +132,7 @@ fun <T : Any> DragDropColumn(
                 dragDropState = dragDropState,
                 index = index
             ) { isDragging ->
-//                itemContent(item)
-//                val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
-                Card(elevation = CardDefaults.cardElevation(defaultElevation = if (isDragging) 4.dp else 0.dp)) {
+                Card {
                     itemContent(index, item)
                 }
             }
