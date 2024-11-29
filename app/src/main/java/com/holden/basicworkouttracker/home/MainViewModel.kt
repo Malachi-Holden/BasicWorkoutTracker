@@ -1,21 +1,28 @@
-package com.holden.basicworkouttracker
+package com.holden.basicworkouttracker.home
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import com.holden.basicworkouttracker.exercise.Exercise
+import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.exercise.ExerciseViewModel
 import com.holden.basicworkouttracker.util.OrderedMap
+import com.holden.basicworkouttracker.util.map
 import com.holden.basicworkouttracker.util.swap
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.UUID
 
 class MainViewModel(
+    initialGroups: OrderedMap<String, ExerciseGroup>,
     initialExercises: OrderedMap<String, Exercise>,
-    val saveExercises: (OrderedMap<String, Exercise>) -> Unit
+    val save: (OrderedMap<String, Exercise>) -> Unit
 ): ViewModel() {
+    val groupsFlow = MutableStateFlow(initialGroups)
     val exercisesFlow = MutableStateFlow(initialExercises)
 
+    val groupsAsState: OrderedMap<String, ExerciseGroup>
+        @Composable
+        get() = groupsFlow.collectAsState().value
     val exercisesAsState: OrderedMap<String, Exercise>
         @Composable
         get() = exercisesFlow.collectAsState().value
@@ -26,31 +33,51 @@ class MainViewModel(
         ::updateExercises
     )
 
-    val _editKey = MutableStateFlow<String?>(null)
-    val editKey: String?
+    private val _showAddGroup = MutableStateFlow(false)
+    val showAddGroup: Boolean
         @Composable
-        get() = _editKey.collectAsState().value
+        get() = _showAddGroup.collectAsState().value
 
     private val _showAddExercise = MutableStateFlow(false)
     val showAddExercise: Boolean
         @Composable
         get() = _showAddExercise.collectAsState().value
 
-    fun rowClicked(key: String) {
-        _editKey.value = if (_editKey.value == key) null else key
-    }
 
     fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
         exercisesFlow.value = newExercises
-        saveExercises(newExercises)
+        save(newExercises)
     }
 
-    fun addButtonClicked() {
+    fun updateGroups(newGroups: OrderedMap<String, ExerciseGroup>) {
+        groupsFlow.value = newGroups
+        // save
+    }
+
+    fun addGroupButtonClicked() {
+        _showAddGroup.value = true
+    }
+
+    fun addExerciseButtonClicked() {
         _showAddExercise.value = true
     }
 
-    fun onPopupClosed() {
+    fun onNewGroupPopupClosed() {
+        _showAddGroup.value = false
+    }
+    fun onNewExercisePopupClosed() {
         _showAddExercise.value = false
+    }
+
+    fun addGroup(group: ExerciseGroup) {
+        val uuid = UUID.randomUUID().toString()
+        updateGroups(
+            groupsFlow.value.append(uuid to group)
+        )
+        val dontShowSet = group.exerciseIds.toSet()
+        updateExercises(
+            exercisesFlow.value.map { key, exercise -> key to exercise.copy(showOnHomepage = exercise.showOnHomepage && key !in dontShowSet) }
+        )
     }
 
     /**
@@ -64,25 +91,27 @@ class MainViewModel(
         return uuid
     }
 
+    fun removeGroup(groupKey: String) {
+        updateGroups(
+            groupsFlow.value.remove(groupKey)
+        )
+    }
+
     fun removeExercise(exerciseKey: String) {
         updateExercises(
             exercisesFlow.value.remove(exerciseKey)
         )
     }
 
+    fun swapGroups(startIndex: Int, endIndex: Int) {
+        updateGroups(
+            groupsFlow.value.swap(startIndex, endIndex)
+        )
+    }
+
     fun swapExercises(startIndex: Int, endIndex: Int) {
-//        val (beforeUid, beforeItem) = exercisesFlow.value.getAtIndex(startIndex)
-//        val (afterUid, afterItem) = exercisesFlow.value.getAtIndex(endIndex)
-//        if (beforeItem == null || afterItem == null) return
         updateExercises(
             exercisesFlow.value.swap(startIndex, endIndex)
-//                .toPairs()
-//                .toMutableList()
-//                .apply {
-//                    set(startIndex, afterUid to afterItem)
-//                    set(endIndex, beforeUid to beforeItem)
-//                }
-//                .toOrderedMap()
         )
     }
 }

@@ -5,6 +5,8 @@ fun <E> List<E>.replaced(index: Int, newVal: E) =
 
 fun <E> List<E>.removed(index: Int) = slice(0 until index) + slice(index + 1 until size)
 
+fun <E> List<E>.swapped(first: Int, second: Int)
+= replaced(first, this[second]).replaced(second, this[first])
 
 fun <T>List<T>.inserted(item: T, index: Int) = slice(0 until index) + item + slice(index until size)
 

@@ -20,6 +20,7 @@ import java.io.InputStream
 val LOCAL_EXERCISES = "LOCAL_EXERCISES"
 val LOCAL_PLATES = "LOCAL_PLATES"
 
+
 @OptIn(ExperimentalSerializationApi::class)
 fun Context.loadExercises(exercisesFile: String): OrderedMap<String, Exercise>? {
     val stream = fileInputStream(filesDir / exercisesFile) ?: return null

@@ -105,3 +105,20 @@ fun <K, V> LazyListScope.items(orderedMap: OrderedMap<K, V>, itemContent: @Compo
     val (key, value) = orderedMap.getAtIndex(it)
     itemContent(key, value)
 }
+
+fun <K, V>OrderedMap<K,V>.filter(predicate: (Pair<K,V>) -> Boolean): OrderedMap<K, V> {
+    var result = this
+    for (i in 0 until size) {
+        val atIndex = getAtIndex(i)
+        if (!predicate(atIndex)) {
+            result = result.remove(atIndex.first)
+        }
+    }
+    return result
+}
+
+fun <K1, V1, K2, V2>OrderedMap<K1,V1>.map(transform: (K1, V1) -> Pair<K2, V2>): OrderedMap<K2, V2>
+= toList().map { (key, value) -> transform(key, value) }.toOrderedMap()
+//{
+//    val pairs = map { (key, value): Map.Entry<K1, V1> -> transform(key, value) }.toOrderedMap()
+//}
