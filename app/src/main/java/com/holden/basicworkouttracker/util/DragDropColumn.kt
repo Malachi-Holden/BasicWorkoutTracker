@@ -5,22 +5,34 @@ import androidx.compose.animation.core.FastOutLinearInEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListItemInfo
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -54,8 +66,8 @@ fun DragDropColumnPreview() {
     }
     DragDropColumn(items = items.toList(), onSwap = { before, after ->
         itemsFlow.value = items.swap(before, after)
-    }) {
-        Text(text = "hello $it")
+    }) {_, item ->
+        Text(text = "hello $item")
     }
 }
 
@@ -64,7 +76,7 @@ fun DragDropColumnPreview() {
 fun <T : Any> DragDropColumn(
     items: List<T>,
     onSwap: (Int, Int) -> Unit,
-    itemContent: @Composable LazyItemScope.(item: T) -> Unit
+    itemContent: @Composable LazyItemScope.(index: Int, item: T) -> Unit
 ) {
     var overscrollJob by remember { mutableStateOf<Job?>(null) }
     val listState = rememberLazyListState()
@@ -122,7 +134,7 @@ fun <T : Any> DragDropColumn(
 //                itemContent(item)
 //                val elevation by animateDpAsState(if (isDragging) 4.dp else 0.dp)
                 Card(elevation = CardDefaults.cardElevation(defaultElevation = if (isDragging) 4.dp else 0.dp)) {
-                    itemContent(item)
+                    itemContent(index, item)
                 }
             }
         }

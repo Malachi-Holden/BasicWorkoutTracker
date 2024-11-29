@@ -2,6 +2,7 @@ package com.holden.basicworkouttracker
 
 import android.content.ClipData
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.draganddrop.dragAndDropSource
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,16 +52,7 @@ fun HomePage(
     Box(modifier = Modifier
         .fillMaxSize()
         .padding(5.dp)) {
-//        val exercises = mainViewModel.exercisesAsState
-        var exercises by remember {
-            mutableStateOf(mainViewModel.exercisesFlow.value)
-        }
-        LaunchedEffect(Unit) {
-            mainViewModel.exercisesFlow.collect {
-                exercises = it
-                println("new exercises: $it")
-            }
-        }
+        val exercises = mainViewModel.exercisesAsState
         Column {
             var editing by remember {
                 mutableStateOf(false)
@@ -78,8 +71,17 @@ fun HomePage(
                     removeExercise = { mainViewModel.removeExercise(key) }
                 )
             }
-            Button(onClick = { editing = !editing }) {
-                Text(text = if (editing) "end editing" else "edit")
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.background
+                ),
+                onClick = { editing = !editing }
+            ) {
+                Text(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    text = if (editing) "end editing" else "edit"
+                )
             }
         }
 
@@ -107,8 +109,8 @@ fun EditableExerciseList(
 ) {
     val exerciseList = exercises.toList()
     if (editing) {
-        DragDropColumn(items = exerciseList, onSwap = onSwap) {
-            itemContent(it.first, it.second)
+        DragDropColumn(items = exerciseList, onSwap = onSwap) { _, (first, second) ->
+            itemContent(first, second)
         }
     } else {
         LazyColumn {
