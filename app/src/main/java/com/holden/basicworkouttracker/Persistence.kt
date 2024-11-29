@@ -2,6 +2,7 @@ package com.holden.basicworkouttracker
 
 import android.content.Context
 import com.holden.basicworkouttracker.exercise.Exercise
+import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.util.OrderedMap
 import com.holden.basicworkouttracker.util.div
 import com.holden.basicworkouttracker.util.toOrderedMap
@@ -19,7 +20,19 @@ import java.io.InputStream
 
 val LOCAL_EXERCISES = "LOCAL_EXERCISES"
 val LOCAL_PLATES = "LOCAL_PLATES"
+val LOCAL_GROUPS = "LOCAL_GROUPS"
 
+@OptIn(ExperimentalSerializationApi::class)
+fun Context.loadGroups(groupsFile: String): OrderedMap<String, ExerciseGroup>? {
+    val stream = fileInputStream(filesDir / groupsFile) ?: return null
+    val groupList: List<Pair<String, ExerciseGroup>> = try {
+        Json.decodeFromStream(stream)
+    } catch (e: SerializationException) {
+        e.printStackTrace()
+        return null
+    }
+    return groupList.toOrderedMap()
+}
 
 @OptIn(ExperimentalSerializationApi::class)
 fun Context.loadExercises(exercisesFile: String): OrderedMap<String, Exercise>? {
@@ -54,6 +67,18 @@ fun fileInputStream(file: File): InputStream? {
     } catch (e: SerializationException) {
         e.printStackTrace()
         return null
+    }
+}
+
+@OptIn(ExperimentalSerializationApi::class)
+fun Context.saveGroups(groupsFile: String, groups: OrderedMap<String, ExerciseGroup>) {
+    val file = (filesDir / groupsFile).apply { createNewFile() }
+    try {
+        Json.encodeToStream(groups.toPairs(), file.outputStream())
+    } catch (e: IOException) {
+        e.printStackTrace()
+    } catch (e: SerializationException) {
+        e.printStackTrace()
     }
 }
 

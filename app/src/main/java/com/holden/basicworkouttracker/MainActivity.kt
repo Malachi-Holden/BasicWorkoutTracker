@@ -30,18 +30,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var exercises = loadExercises(LOCAL_EXERCISES) ?: orderedMapOf()
-                    val ids = if (exercises.isNotEmpty()) {
-                        exercises.toList().map { it.first }
-                    } else {
-                        listOf()
-                    }
-                    val group = ExerciseGroup("First group", ids.subList(0, ids.size/2))
-                    exercises = exercises.replace(exercises[group.exerciseIds.first()]!!.copy(
-                        showOnHomepage = false
-                    ), group.exerciseIds.first())
+                    val exercises = loadExercises(LOCAL_EXERCISES) ?: orderedMapOf()
+                    val groups = loadGroups(LOCAL_GROUPS) ?: orderedMapOf()
                     val mainViewModel: MainViewModel = viewModel(
-                        factory = buildFactory { MainViewModel(orderedMapOf(UUID.randomUUID().toString() to group), exercises, ::saveExercises) }
+                        factory = buildFactory { MainViewModel(groups, exercises, ::saveExercises, ::saveGroups) }
                     )
                     MainNavHost(navController = rememberNavController(), mainViewModel = mainViewModel)
                 }
@@ -52,6 +44,12 @@ class MainActivity : ComponentActivity() {
     fun saveExercises(exercises: OrderedMap<String, Exercise>) {
         lifecycleScope.launch(Dispatchers.IO) {
             saveExercises(LOCAL_EXERCISES, exercises)
+        }
+    }
+
+    fun saveGroups(groups: OrderedMap<String, ExerciseGroup>) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            saveGroups(LOCAL_GROUPS, groups)
         }
     }
 }

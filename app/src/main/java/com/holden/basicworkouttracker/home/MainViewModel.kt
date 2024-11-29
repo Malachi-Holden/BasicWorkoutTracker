@@ -15,7 +15,8 @@ import java.util.UUID
 class MainViewModel(
     initialGroups: OrderedMap<String, ExerciseGroup>,
     initialExercises: OrderedMap<String, Exercise>,
-    val save: (OrderedMap<String, Exercise>) -> Unit
+    val saveExercises: (OrderedMap<String, Exercise>) -> Unit,
+    val saveGroups: (OrderedMap<String, ExerciseGroup>) -> Unit
 ): ViewModel() {
     val groupsFlow = MutableStateFlow(initialGroups)
     val exercisesFlow = MutableStateFlow(initialExercises)
@@ -56,12 +57,12 @@ class MainViewModel(
 
     fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
         exercisesFlow.value = newExercises
-        save(newExercises)
+        saveExercises(newExercises)
     }
 
     fun updateGroups(newGroups: OrderedMap<String, ExerciseGroup>) {
         groupsFlow.value = newGroups
-        // save
+        saveGroups(newGroups)
     }
 
     fun addGroupButtonClicked() {

@@ -1,13 +1,16 @@
 package com.holden.basicworkouttracker.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -15,6 +18,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.ui.theme.DefaultButton
@@ -51,7 +56,13 @@ fun EditGroupPopup(
     onFinishedEditing: (ExerciseGroup) -> Unit,
     onPopupClosed: () -> Unit
 ) {
-    ModalView(visible = showPopup, onClose = onPopupClosed) {
+    ModalView(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(5.dp),
+        visible = showPopup,
+        onClose = onPopupClosed
+    ) {
         Column {
             var group by remember {
                 mutableStateOf(initialGroup ?: ExerciseGroup("", listOf()))
@@ -89,18 +100,21 @@ fun EditGroupPopup(
                         }
                     }
                 }
-            }
-            Row {
-                DefaultButton(onClick = onPopupClosed) {
-                    Text(text = "Cancel")
+                item {
+                    Row {
+                        DefaultButton(onClick = onPopupClosed) {
+                            Text(text = "Cancel")
+                        }
+                        DefaultButton(onClick = {
+                            onFinishedEditing(group)
+                            onPopupClosed()
+                        }) {
+                            Text(text = doneButtonText)
+                        }
+                    }
                 }
-                DefaultButton(onClick = {
-                    onFinishedEditing(group)
-                    onPopupClosed()
-                }) {
-                    Text(text = doneButtonText)
-                }
             }
+
         }
     }
 }
@@ -111,7 +125,13 @@ fun AddExercisePopup(
     onExerciseCreated: (Exercise) -> Unit,
     onPopupClosed: () -> Unit
 ) {
-    ModalView(visible = showPopup, onClose = onPopupClosed) {
+    ModalView(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(5.dp),
+        visible = showPopup,
+        onClose = onPopupClosed
+    ) {
         Column {
             Text(text = "New Exercise")
             val (title, setTitle) = remember {
