@@ -10,6 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.holden.basicworkouttracker.exercise.day.ExerciseForDayView
 import com.holden.basicworkouttracker.exercise.ExerciseView
+import com.holden.basicworkouttracker.home.HomePage
+import com.holden.basicworkouttracker.home.MainViewModel
 
 enum class Nav {
     Home, Exercise, Day

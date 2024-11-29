@@ -40,13 +40,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.holden.basicworkouttracker.LOCAL_PLATES
-import com.holden.basicworkouttracker.MainViewModel
 import com.holden.basicworkouttracker.PlatesToWeight
 import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.WeightToPlates
-import com.holden.basicworkouttracker.exercise.ExerciseViewModel
 import com.holden.basicworkouttracker.exercise.Workout
-import com.holden.basicworkouttracker.loadPlates
 import com.holden.basicworkouttracker.savePlates
 import com.holden.basicworkouttracker.ui.theme.DefaultButton
 import com.holden.basicworkouttracker.util.ModalView

@@ -9,9 +9,15 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
+@Serializable
+data class ExerciseGroup(val title: String, val exerciseIds: List<String>)
 
 @Serializable
-data class Exercise(val title: String, val history: List<ExerciseForDay>)
+data class Exercise(
+    val title: String,
+    val history: List<ExerciseForDay>,
+    val showOnHomepage: Boolean = true
+)
 
 @Serializable
 data class ExerciseForDay(val date: LocalDate?, val sets: List<Workout>)
