@@ -56,7 +56,7 @@ fun HomePage(
                 removeExercise = mainViewModel::removeExercise,
                 removeGroup = mainViewModel::removeGroup,
                 showExercise = showExercise,
-                editGroup = {  }
+                editGroup = mainViewModel::editGroupButtonClicked
             )
             Row {
                 Button(
@@ -106,6 +106,14 @@ fun HomePage(
             exercises = exercises,
             onGroupCreated = mainViewModel::addGroup,
             onPopupClosed = mainViewModel::onNewGroupPopupClosed
+        )
+        EditGroupPopup(
+            initialGroup = mainViewModel.editingGroup,
+            showPopup = mainViewModel.editingGroupId != null,
+            exercises = exercises,
+            doneButtonText = "Save",
+            onFinishedEditing = mainViewModel::onEditGroupComplete,
+            onPopupClosed = mainViewModel::onEditGroupPopupClosed
         )
 
         AddExercisePopup(

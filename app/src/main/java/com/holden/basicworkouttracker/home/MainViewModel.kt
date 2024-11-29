@@ -38,6 +38,16 @@ class MainViewModel(
         @Composable
         get() = _showAddGroup.collectAsState().value
 
+    private val _editingGroupId = MutableStateFlow<String?>(null)
+
+    val editingGroupId: String?
+        @Composable
+        get() = _editingGroupId.collectAsState().value
+
+    val editingGroup: ExerciseGroup?
+        @Composable
+        get() = editingGroupId?.let { groupsAsState[it] }
+
     private val _showAddExercise = MutableStateFlow(false)
     val showAddExercise: Boolean
         @Composable
@@ -58,6 +68,10 @@ class MainViewModel(
         _showAddGroup.value = true
     }
 
+    fun editGroupButtonClicked(id: String) {
+        _editingGroupId.value = id
+    }
+
     fun addExerciseButtonClicked() {
         _showAddExercise.value = true
     }
@@ -65,8 +79,17 @@ class MainViewModel(
     fun onNewGroupPopupClosed() {
         _showAddGroup.value = false
     }
+
+    fun onEditGroupPopupClosed() {
+        _editingGroupId.value = null
+    }
     fun onNewExercisePopupClosed() {
         _showAddExercise.value = false
+    }
+
+    fun onEditGroupComplete(newGroup: ExerciseGroup) {
+        val id = _editingGroupId.value ?: return
+        editGroup(id, newGroup)
     }
 
     fun addGroup(group: ExerciseGroup) {
@@ -75,6 +98,16 @@ class MainViewModel(
             groupsFlow.value.append(uuid to group)
         )
         val dontShowSet = group.exerciseIds.toSet()
+        updateExercises(
+            exercisesFlow.value.map { key, exercise -> key to exercise.copy(showOnHomepage = exercise.showOnHomepage && key !in dontShowSet) }
+        )
+    }
+
+    fun editGroup(uuid: String, newGroup: ExerciseGroup) {
+        updateGroups(
+            groupsFlow.value.replace(newGroup, uuid)
+        )
+        val dontShowSet = newGroup.exerciseIds.toSet()
         updateExercises(
             exercisesFlow.value.map { key, exercise -> key to exercise.copy(showOnHomepage = exercise.showOnHomepage && key !in dontShowSet) }
         )

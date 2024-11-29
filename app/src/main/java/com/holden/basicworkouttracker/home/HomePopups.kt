@@ -32,10 +32,29 @@ fun AddGroupPopup(
     onGroupCreated: (ExerciseGroup) -> Unit,
     onPopupClosed: () -> Unit
 ) {
+    EditGroupPopup(
+        null,
+        showPopup,
+        exercises,
+        "Create",
+        onGroupCreated,
+        onPopupClosed
+    )
+}
+
+@Composable
+fun EditGroupPopup(
+    initialGroup: ExerciseGroup? = null,
+    showPopup: Boolean,
+    exercises: OrderedMap<String, Exercise>,
+    doneButtonText: String,
+    onFinishedEditing: (ExerciseGroup) -> Unit,
+    onPopupClosed: () -> Unit
+) {
     ModalView(visible = showPopup, onClose = onPopupClosed) {
         Column {
             var group by remember {
-                mutableStateOf(ExerciseGroup("", listOf()))
+                mutableStateOf(initialGroup ?: ExerciseGroup("", listOf()))
             }
             Text(text = "New Exercise Group")
             TextField(
@@ -76,10 +95,10 @@ fun AddGroupPopup(
                     Text(text = "Cancel")
                 }
                 DefaultButton(onClick = {
-                    onGroupCreated(group)
+                    onFinishedEditing(group)
                     onPopupClosed()
                 }) {
-                    Text(text = "Create")
+                    Text(text = doneButtonText)
                 }
             }
         }
