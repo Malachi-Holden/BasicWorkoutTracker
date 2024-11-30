@@ -26,6 +26,7 @@ fun EditExercises(
     groups: OrderedMap<String, ExerciseGroup>,
     onSwapGroups: (Int, Int) -> Unit,
     editGroup: (String) -> Unit,
+    editExercise: (String) -> Unit,
     removeGroup: (String) -> Unit,
     exerciseList: List<Pair<String, Exercise>>,
     onSwapExercises: (Int, Int) -> Unit,
@@ -41,10 +42,13 @@ fun EditExercises(
                 removeGroup = { removeGroup(id) }
             )
         }
-
         Text(text = "Exercises")
         DragDropColumn(items = exerciseList, onSwap = onSwapExercises) { _, (id, exercise) ->
-            EditExerciseRow(exercise = exercise, removeExercise = { removeExercise(id) })
+            EditExerciseRow(
+                exercise = exercise,
+                onEditClicked = { editExercise(id) },
+                removeExercise = { removeExercise(id) }
+            )
         }
     }
 }
@@ -85,6 +89,7 @@ fun EditGroupRow(
 @Composable
 fun EditExerciseRow(
     exercise: Exercise,
+    onEditClicked: () -> Unit,
     removeExercise: () -> Unit
 ) {
     Row(
@@ -101,6 +106,12 @@ fun EditExerciseRow(
             Icon(
                 imageVector = Icons.Default.Delete,
                 contentDescription = "Delete Exercise"
+            )
+        }
+        IconButton(onClick = onEditClicked) {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = "Edit Exercise"
             )
         }
     }

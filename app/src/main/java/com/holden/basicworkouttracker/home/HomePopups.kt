@@ -41,6 +41,7 @@ fun AddGroupPopup(
         null,
         showPopup,
         exercises,
+        "New Exercise Group",
         "Create",
         onGroupCreated,
         onPopupClosed
@@ -49,9 +50,10 @@ fun AddGroupPopup(
 
 @Composable
 fun EditGroupPopup(
-    initialGroup: ExerciseGroup? = null,
+    initialGroup: ExerciseGroup?,
     showPopup: Boolean,
     exercises: OrderedMap<String, Exercise>,
+    headerText: String,
     doneButtonText: String,
     onFinishedEditing: (ExerciseGroup) -> Unit,
     onPopupClosed: () -> Unit
@@ -67,7 +69,7 @@ fun EditGroupPopup(
             var group by remember {
                 mutableStateOf(initialGroup ?: ExerciseGroup("", listOf()))
             }
-            Text(text = "New Exercise Group")
+            Text(text = headerText)
             TextField(
                 value = group.title,
                 onValueChange = { group = group.copy(title = it) },
@@ -125,6 +127,25 @@ fun AddExercisePopup(
     onExerciseCreated: (Exercise) -> Unit,
     onPopupClosed: () -> Unit
 ) {
+    EditExercisePopup(
+        headerText = "New Exercise",
+        doneText = "Create",
+        initialExercise = null,
+        showPopup = showPopup,
+        onExerciseUpdated = onExerciseCreated,
+        onPopupClosed = onPopupClosed
+    )
+}
+
+@Composable
+fun EditExercisePopup(
+    headerText: String,
+    doneText: String,
+    initialExercise: Exercise?,
+    showPopup: Boolean,
+    onExerciseUpdated: (Exercise) -> Unit,
+    onPopupClosed: () -> Unit
+) {
     ModalView(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
@@ -133,13 +154,13 @@ fun AddExercisePopup(
         onClose = onPopupClosed
     ) {
         Column {
-            Text(text = "New Exercise")
-            val (title, setTitle) = remember {
-                mutableStateOf("")
+            Text(text = headerText)
+            var exercise by remember {
+                mutableStateOf(initialExercise ?: Exercise("", listOf()))
             }
             TextField(
-                value = title,
-                onValueChange = setTitle,
+                value = exercise.title,
+                onValueChange = { exercise = exercise.copy(title = it) },
                 placeholder = { Text(text = "Name") }
             )
             Row {
@@ -147,10 +168,10 @@ fun AddExercisePopup(
                     Text(text = "Cancel")
                 }
                 DefaultButton(onClick = {
-                    onExerciseCreated(Exercise(title, listOf()))
+                    onExerciseUpdated(exercise)
                     onPopupClosed()
                 }) {
-                    Text(text = "Create")
+                    Text(text = doneText)
                 }
             }
         }
