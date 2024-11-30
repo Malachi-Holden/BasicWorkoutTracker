@@ -41,26 +41,33 @@ class MainViewModel(
 
     private val _editingGroupId = MutableStateFlow<String?>(null)
 
-    val editingGroupId: String?
-        @Composable
-        get() = _editingGroupId.collectAsState().value
-
     val editingGroup: ExerciseGroup?
         @Composable
-        get() = editingGroupId?.let { groupsAsState[it] }
+        get() = _editingGroupId
+            .collectAsState()
+            .value
+            ?.let { groupsAsState[it] }
+
+    private val _editingExerciseId = MutableStateFlow<String?>(null)
+
+    val editingExercise: Exercise?
+        @Composable
+        get() = _editingExerciseId
+            .collectAsState()
+            .value
+            ?.let { exercisesAsState[it] }
 
     private val _showAddExercise = MutableStateFlow(false)
     val showAddExercise: Boolean
         @Composable
         get() = _showAddExercise.collectAsState().value
 
-
-    fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
+    private fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
         exercisesFlow.value = newExercises
         saveExercises(newExercises)
     }
 
-    fun updateGroups(newGroups: OrderedMap<String, ExerciseGroup>) {
+    private fun updateGroups(newGroups: OrderedMap<String, ExerciseGroup>) {
         groupsFlow.value = newGroups
         saveGroups(newGroups)
     }
@@ -71,6 +78,10 @@ class MainViewModel(
 
     fun editGroupButtonClicked(id: String) {
         _editingGroupId.value = id
+    }
+
+    fun editExerciseButtonClicked(id: String) {
+        _editingExerciseId.value = id
     }
 
     fun addExerciseButtonClicked() {
@@ -84,6 +95,10 @@ class MainViewModel(
     fun onEditGroupPopupClosed() {
         _editingGroupId.value = null
     }
+
+    fun onEditExercisePopupClosed() {
+        _editingExerciseId.value = null
+    }
     fun onNewExercisePopupClosed() {
         _showAddExercise.value = false
     }
@@ -91,6 +106,11 @@ class MainViewModel(
     fun onEditGroupComplete(newGroup: ExerciseGroup) {
         val id = _editingGroupId.value ?: return
         editGroup(id, newGroup)
+    }
+
+    fun onEditExerciseComplete(newExercise: Exercise) {
+        val id = _editingExerciseId.value ?: return
+        editExercise(id, newExercise)
     }
 
     fun addGroup(group: ExerciseGroup) {
@@ -104,7 +124,7 @@ class MainViewModel(
         )
     }
 
-    fun editGroup(uuid: String, newGroup: ExerciseGroup) {
+    private fun editGroup(uuid: String, newGroup: ExerciseGroup) {
         updateGroups(
             groupsFlow.value.replace(newGroup, uuid)
         )
@@ -114,15 +134,17 @@ class MainViewModel(
         )
     }
 
-    /**
-     * updates the data with the new exercise and returns the exercise key
-     */
-    fun addExercise(exercise: Exercise): String {
+    fun editExercise(uuid: String, newExercise: Exercise) {
+        updateExercises(
+            exercisesFlow.value.replace(newExercise, uuid)
+        )
+    }
+
+    fun addExercise(exercise: Exercise) {
         val uuid = UUID.randomUUID().toString()
         updateExercises(
             exercisesFlow.value.append(uuid to exercise)
         )
-        return uuid
     }
 
     fun removeGroup(groupKey: String) {

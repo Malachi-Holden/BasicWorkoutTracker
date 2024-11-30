@@ -1,6 +1,5 @@
 package com.holden.basicworkouttracker.home
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -32,7 +31,6 @@ import com.holden.basicworkouttracker.util.Side
 import com.holden.basicworkouttracker.util.items
 import com.holden.basicworkouttracker.util.singleEdge
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomePage(
     mainViewModel: MainViewModel,
@@ -56,7 +54,8 @@ fun HomePage(
                 removeExercise = mainViewModel::removeExercise,
                 removeGroup = mainViewModel::removeGroup,
                 showExercise = showExercise,
-                editGroup = mainViewModel::editGroupButtonClicked
+                editGroup = mainViewModel::editGroupButtonClicked,
+                editExercise = mainViewModel::editExerciseButtonClicked
             )
             Row {
                 Button(
@@ -109,17 +108,25 @@ fun HomePage(
         )
         EditGroupPopup(
             initialGroup = mainViewModel.editingGroup,
-            showPopup = mainViewModel.editingGroupId != null,
+            showPopup = mainViewModel.editingGroup != null,
             exercises = exercises,
+            "Edit Exercise Group",
             doneButtonText = "Save",
             onFinishedEditing = mainViewModel::onEditGroupComplete,
             onPopupClosed = mainViewModel::onEditGroupPopupClosed
         )
-
         AddExercisePopup(
             showPopup = mainViewModel.showAddExercise,
             onExerciseCreated = mainViewModel::addExercise,
             onPopupClosed = mainViewModel::onNewExercisePopupClosed
+        )
+        EditExercisePopup(
+            headerText = "Edit Exercise",
+            doneText = "Save",
+            initialExercise = mainViewModel.editingExercise,
+            showPopup = mainViewModel.editingExercise != null,
+            onExerciseUpdated = mainViewModel::onEditExerciseComplete,
+            onPopupClosed = mainViewModel::onEditExercisePopupClosed
         )
     }
 }
@@ -134,7 +141,8 @@ fun EditableExerciseList(
     removeExercise: (String) -> Unit,
     removeGroup: (String) -> Unit,
     showExercise: (String) -> Unit,
-    editGroup: (String) -> Unit
+    editGroup: (String) -> Unit,
+    editExercise: (String) -> Unit
 ) {
     val exerciseList = exercises.toList()
     if (editing) {
@@ -142,6 +150,7 @@ fun EditableExerciseList(
             groups,
             onSwapGroups,
             editGroup,
+            editExercise,
             removeGroup,
             exerciseList,
             onSwapExercises,
@@ -149,7 +158,7 @@ fun EditableExerciseList(
         )
     } else {
         LazyColumn {
-            items(groups) { key, group ->
+            items(groups) { _, group ->
                 if (group == null) return@items
                 GroupView(group, exercises, showExercise)
             }
@@ -197,7 +206,6 @@ fun GroupView(
 
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseRow(
     exercise: Exercise,
