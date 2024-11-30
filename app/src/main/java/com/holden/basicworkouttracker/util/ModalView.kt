@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun ModalView(
     modifier: Modifier = Modifier,
+    modalProportion: Float = .7f,
     visible: Boolean,
     onClose: () -> Unit,
     content: @Composable () -> Unit
@@ -29,7 +30,7 @@ fun ModalView(
     ) {
         Box(modifier = modifier
             .align(Alignment.Center)
-            .fillMaxSize(.7f)
+            .fillMaxSize(modalProportion)
             .clickable(remember { MutableInteractionSource() }, null, onClick = {})
         ) {
             content()
