@@ -32,6 +32,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
@@ -73,7 +74,8 @@ fun ExerciseForDayView(
                 Text(text = title, style = MaterialTheme.typography.displayLarge)
                 Text(
                     text = exerciseForDay.date.toString(),
-                    style = MaterialTheme.typography.displaySmall
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 1
                 )
             }
             SetListView(
