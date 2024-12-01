@@ -19,7 +19,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.ui.theme.DefaultButton
@@ -41,8 +43,8 @@ fun AddGroupPopup(
         null,
         showPopup,
         exercises,
-        "New Exercise Group",
-        "Create",
+        stringResource(id = R.string.new_exercise_group),
+        stringResource(id = R.string.create),
         onGroupCreated,
         onPopupClosed
     )
@@ -73,7 +75,7 @@ fun EditGroupPopup(
             TextField(
                 value = group.title,
                 onValueChange = { group = group.copy(title = it) },
-                placeholder = { Text(text = "Name") }
+                placeholder = { Text(text = stringResource(id = R.string.name)) }
             )
             DragDropColumn(
                 items = group.exerciseIds,
@@ -87,7 +89,9 @@ fun EditGroupPopup(
                 Row {
                     Text(text = exercise.title)
                     IconButton(onClick = { group = group.copy(exerciseIds = group.exerciseIds.filter { it != id }) }) {
-                        Icon(imageVector = Icons.Default.Clear, contentDescription = "Remove exercise from group")
+                        Icon(imageVector = Icons.Default.Clear, contentDescription = stringResource(
+                            id = R.string.remove_exercise_from_group
+                        ))
                     }
                 }
             }
@@ -98,14 +102,16 @@ fun EditGroupPopup(
                     Row {
                         Text(text = exercise.title)
                         IconButton(onClick = { group = group.copy(exerciseIds = group.exerciseIds + id) }) {
-                            Icon(imageVector = Icons.Default.Add, contentDescription = "Add exercise to group")
+                            Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(
+                                id = R.string.add_exercise_to_group
+                            ))
                         }
                     }
                 }
                 item {
                     Row {
                         DefaultButton(onClick = onPopupClosed) {
-                            Text(text = "Cancel")
+                            Text(text = stringResource(id = R.string.cancel))
                         }
                         DefaultButton(onClick = {
                             onFinishedEditing(group)
@@ -128,8 +134,8 @@ fun AddExercisePopup(
     onPopupClosed: () -> Unit
 ) {
     EditExercisePopup(
-        headerText = "New Exercise",
-        doneText = "Create",
+        headerText = stringResource(id = R.string.new_exercise),
+        doneText = stringResource(id = R.string.create),
         initialExercise = null,
         showPopup = showPopup,
         onExerciseUpdated = onExerciseCreated,
@@ -161,11 +167,11 @@ fun EditExercisePopup(
             TextField(
                 value = exercise.title,
                 onValueChange = { exercise = exercise.copy(title = it) },
-                placeholder = { Text(text = "Name") }
+                placeholder = { Text(text = stringResource(id = R.string.name)) }
             )
             Row {
                 DefaultButton(onClick = onPopupClosed) {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(id = R.string.cancel))
                 }
                 DefaultButton(onClick = {
                     onExerciseUpdated(exercise)

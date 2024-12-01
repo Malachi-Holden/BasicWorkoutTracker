@@ -24,12 +24,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.exercise.day.SetListView
 import com.holden.basicworkouttracker.ui.theme.DefaultButton
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExerciseView(
     exerciseViewModel: ExerciseViewModel,
@@ -53,7 +55,7 @@ fun ExerciseView(
                         .padding(10.dp)
                 ){
                     Text(
-                        text = "Last time",
+                        text = stringResource(id = R.string.last_time),
                         style = MaterialTheme.typography.titleLarge
                     )
                     Divider(thickness = 2.dp, modifier = Modifier.padding(5.dp))
@@ -66,7 +68,7 @@ fun ExerciseView(
             }
 
             Text(
-                text = "History",
+                text = stringResource(id = R.string.history),
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = 15.dp, top = 15.dp)
             )
@@ -91,7 +93,11 @@ fun ExerciseView(
                                 modifier = Modifier.weight(1f),
                                 text = exerciseForDay.date.toString()
                             )
-                            Text(text = "${exerciseForDay.sets.size} sets")
+                            Text(text = pluralStringResource(
+                                id = R.plurals.sets,
+                                exerciseForDay.sets.size,
+                                exerciseForDay.sets.size
+                            ))
                         }
                         if (deleteIndex == dayIndex) {
                             IconButton(onClick = {
@@ -100,7 +106,7 @@ fun ExerciseView(
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Delete,
-                                    contentDescription = "Delete day"
+                                    contentDescription = stringResource(id = R.string.delete_day)
                                 )
                             }
                         }
@@ -120,8 +126,8 @@ fun ExerciseView(
             }
         ) {
             Row(modifier = Modifier.padding(10.dp)) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add workout day")
-                Text(text = "New Day")
+                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.add_workout_day))
+                Text(text = stringResource(id = R.string.new_day))
             }
         }
     }
