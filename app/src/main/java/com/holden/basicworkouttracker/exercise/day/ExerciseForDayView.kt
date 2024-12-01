@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -106,28 +107,28 @@ fun ExerciseForDayView(
             onClick = { dayViewModel.showAddSet.value = true }
         ) {
             Row(modifier = Modifier.padding(10.dp)) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add set")
-                Text(text = "New Set")
+                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.add_set))
+                Text(text = stringResource(R.string.new_set))
             }
         }
         AddSetPopup(
-            title = "Add Set",
+            title = stringResource(R.string.add_set),
             confirmButtonTitle = "Add",
             showAddSet = dayViewModel.showAddSet.collectAsState().value,
             onClose = { dayViewModel.showAddSet.value = false },
             onAdd = dayViewModel::addSet
         )
         AddSetPopup(
-            title = "Update Set",
-            confirmButtonTitle = "Update",
+            title = stringResource(id = R.string.update_set),
+            confirmButtonTitle = stringResource(id = R.string.update),
             initialWorkout = dayViewModel.workoutToUpdate,
             showAddSet = dayViewModel.showEditSet,
             onClose = dayViewModel::closeUpdateSetPopup,
             onAdd = dayViewModel::updateSet,
         )
         AddSetPopup(
-            title = "Copy Set",
-            confirmButtonTitle = "Copy",
+            title = stringResource(id = R.string.copy_set),
+            confirmButtonTitle = stringResource(id = R.string.copy),
             initialWorkout = dayViewModel.workoutToCopy,
             showAddSet = dayViewModel.showCopySet,
             onClose = dayViewModel::closeCopySetPopup,
@@ -180,7 +181,7 @@ fun DayPickerView(
             )
             Row {
                 DefaultButton(onClick = onClose) {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(id = R.string.cancel))
                 }
                 DefaultButton(onClick = {
                     val millis = (state.selectedDateMillis ?: return@DefaultButton)
@@ -189,7 +190,7 @@ fun DayPickerView(
                             .fromEpochMilliseconds(millis)
                     )
                 }) {
-                    Text(text = "Update")
+                    Text(text = stringResource(id = R.string.update))
                 }
             }
         }
@@ -231,7 +232,7 @@ fun AddSetPopup(
                 TextField(
                     value = reps,
                     onValueChange = setReps,
-                    placeholder = { Text(text = "Reps") },
+                    placeholder = { Text(text = stringResource(id = R.string.reps)) },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
                 Row(
@@ -241,18 +242,18 @@ fun AddSetPopup(
                     TextField(
                         value = weight,
                         onValueChange = setWeight,
-                        placeholder = { Text(text = "Weight") },
+                        placeholder = { Text(text = stringResource(id = R.string.weight)) },
                         modifier = Modifier.weight(1f),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                     )
                     Button(onClick = { showCalculator = true }) {
-                        Text(text = "Calculate by plates")
+                        Text(text = stringResource(id = R.string.calculate_by_plates))
                     }
                 }
 
                 Row {
                     Button(onClick = onClose) {
-                        Text(text = "Cancel")
+                        Text(text = stringResource(id = R.string.cancel))
                     }
                     Button(
                         enabled = workout != null,
@@ -309,7 +310,7 @@ fun SetListView(
             val showActions = setIndex == actionsIndex
             if (onDeleteSet == null || onUpdateSet == null || onCopySet == null) {
                 Text(
-                    text = "${workout.weight} lbs x ${workout.reps}",
+                    text = stringResource(id = R.string.sets_by_reps, workout.weight.toString(), workout.reps),
                     style = textStyle,
                     fontWeight = fontWeight
                 )
@@ -349,20 +350,20 @@ fun SetActionRow(
             .combinedClickable(onClick = {}, onLongClick = onLongPress),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "${workout.weight} lbs x ${workout.reps}")
+        Text(text = stringResource(id = R.string.sets_by_reps, workout.weight.toString(), workout.reps))
         Box() {
             Row() {
                 IconButton(onClick = onDeleteSet) {
                     Icon(
                         imageVector = Icons.Default.Delete,
-                        contentDescription = "Delete set",
+                        contentDescription = stringResource(id = R.string.delete_set),
                         modifier = Modifier.padding(10.dp),
                     )
                 }
                 IconButton(onClick = onUpdateSet) {
                     Icon(
                         imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit set",
+                        contentDescription = stringResource(id = R.string.edit_set),
                         modifier = Modifier.padding(10.dp),
                     )
                 }
@@ -372,7 +373,7 @@ fun SetActionRow(
                 DefaultButton(
                     onClick = onCalculatePlates
                 ) {
-                    Text(text = "Calculate plates")
+                    Text(text = stringResource(id = R.string.calculate_plates))
                 }
             }
             if (!showActions) {

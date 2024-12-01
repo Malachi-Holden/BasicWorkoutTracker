@@ -24,10 +24,6 @@ fun MainNavHost(
 ) {
     val exerciseViewModel = mainViewModel.exerciseViewModel
 
-//    var showCreateWorkoutView by remember {
-//        mutableStateOf(false)
-//    }
-
     var dayIndex by remember {
         mutableStateOf<Int?>(null)
     }

@@ -1,5 +1,6 @@
 package com.holden.basicworkouttracker
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,27 +37,28 @@ fun PlatesToWeight(
     onApply: ((Double) -> Unit)? = null,
     onCancel: (() -> Unit)? = null
 ) {
+    val initialBarbell = stringResource(id = R.string.barbell_default)
     val (barbellInput, setBarbellInput) = remember {
-        mutableStateOf("45")
+        mutableStateOf(initialBarbell)
     }
     val weightInputs = remember {
         mutableStateListOf<String>()
     }
     Column {
-        Text(text = "Calculate weight", style = MaterialTheme.typography.displayMedium)
+        Text(text = stringResource(id = R.string.calculate_by_plates), style = MaterialTheme.typography.displayMedium)
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "barbell:")
+            Text(text = stringResource(id = R.string.barbell))
             TextField(
                 value = barbellInput,
                 onValueChange = setBarbellInput,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
         }
-        Text(text = "Weight on both sides:")
+        Text(text = stringResource(id = R.string.weight_on_both_sides))
         EditableTextColumn(
             inputList = weightInputs,
             keyboardType = KeyboardType.Decimal,
-            placeHolderText = "Plate weight"
+            placeHolderText = stringResource(id = R.string.plate_weight)
         )
         val weights = weightInputs.mapNotNullorNull { it.toDoubleWithWhiteSpaceOrNull() }
         val barbell = barbellInput.toDoubleWithWhiteSpaceOrNull()
@@ -64,15 +68,15 @@ fun PlatesToWeight(
             platesToWeight(barbell, weights)
         }
         val message = if (result == null) {
-            "Incorrect numerical entry"
+            stringResource(id = R.string.incorrect_numerical_entry)
         } else {
-            "$result lbs"
+            stringResource(id = R.string.lbs, result.toString())
         }
         Row {
             Text(text = message)
             if (onCancel != null) {
                 Button(onClick = onCancel) {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(id = R.string.cancel))
                 }
             }
             if (onApply != null) {
@@ -83,7 +87,7 @@ fun PlatesToWeight(
                         }
                     },
                     enabled = result != null) {
-                    Text(text = "Apply")
+                    Text(text = stringResource(id = R.string.apply))
                 }
             }
 
@@ -95,6 +99,9 @@ fun platesToWeight(
     bar: Double,
     platesPerSide: List<Double>
 ): Double = bar + platesPerSide.sum() * 2
+
+fun Context.plateCountString(number: Int, weight: Double)
+= getString(R.string.plate_count, number, weight.toString())
 
 @Composable
 fun WeightToPlates(
@@ -123,45 +130,46 @@ fun WeightToPlates(
         naiveWeightToPlates(goalWeight, barWeight, availablePlates.sortedDescending())
     }
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-        Text(text = "Calculate plates")
+        Text(text = stringResource(id = R.string.calculate_plates))
         TextField(
             value = goalWeightText,
             onValueChange = setGoalWeightText,
-            placeholder = { Text(text = "Goal Weight") },
+            placeholder = { Text(text = stringResource(id = R.string.goal_weight)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
         )
-        Text(text = "Plates per side:")
+        Text(text = stringResource(id = R.string.plates_per_side))
+        val context = LocalContext.current
         val resultText = result
             ?.filter { (number, _) -> number > 0 }
-            ?.joinToString(", "){ (number, plate) -> "$number x $plate lbs" }
-            ?: "invalid numerical input"
+            ?.joinToString(", "){ (number, plate) -> context.plateCountString(number, plate) }
+            ?: stringResource(id = R.string.invalid_numerical_input)
         Text(text = resultText)
         val errorText = if (result == null || goalWeight == null || barWeight == null) {
             ""
         } else {
             val error = goalWeight - 2 * result.sumOf { (number, plate) -> number * plate } - barWeight
-            "Error amount: $error"
+            stringResource(id = R.string.error_amount, error.toString())
         }
         Text(text = errorText)
         Spacer(modifier = Modifier.height(20.dp))
-        Text(text = "Bar weight")
+        Text(text = stringResource(id = R.string.bar_weight))
         TextField(
             value = barWeightText,
             onValueChange = setBarWeightText,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-            placeholder = { Text(text = "Bar weight") }
+            placeholder = { Text(text = stringResource(id = R.string.bar_weight)) }
         )
 
-        Text(text = "Available Plates")
+        Text(text = stringResource(id = R.string.available_plates))
         EditableTextColumn(
             inputList = availablePlatesText,
-            placeHolderText = "Plate weight",
+            placeHolderText = stringResource(id = R.string.plate_weight),
             keyboardType = KeyboardType.Decimal
         )
         val saveButtonText = if (availablePlates == null) {
-            "Invalid plate weight"
+            stringResource(id = R.string.invalid_numerical_input)
         } else {
-            "Save plate configuration"
+            stringResource(id = R.string.save_plate_configuration)
         }
         Button(
             onClick = {
@@ -200,20 +208,22 @@ fun EditableTextColumn(
                         modifier = Modifier.weight(1f)
                     )
                     IconButton(onClick = { inputList.removeAt(i) }) {
-                        Icon(imageVector = Icons.Default.Delete, contentDescription = "Remove item")
+                        Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(
+                            id = R.string.remove_item
+                        ))
                     }
                 }
 
             }
         }
         IconButton(onClick = { inputList.add("") }) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add item")
+            Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.add_item))
         }
     }
 }
 
 /**
- * This algorithm will not be sucessful in a lot of edge cases but it works for most gym needs
+ * This algorithm will not be successful in a lot of edge cases but it works for most gym needs
  */
 fun naiveWeightToPlates(
     weight: Double,

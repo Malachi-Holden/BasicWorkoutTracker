@@ -14,8 +14,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
+import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.util.DragDropColumn
@@ -35,7 +37,7 @@ fun EditExercises(
 ) {
     val groupList = groups.toList()
     Column(modifier = modifier) {
-        Text(text = "Groups")
+        Text(text = stringResource(id = R.string.groups))
         DragDropColumn(items = groupList, onSwap = onSwapGroups) { _, (id, group) ->
             EditGroupRow(
                 group = group,
@@ -43,7 +45,7 @@ fun EditExercises(
                 removeGroup = { removeGroup(id) }
             )
         }
-        Text(text = "Exercises")
+        Text(text = stringResource(id = R.string.exercises))
         DragDropColumn(items = exerciseList, onSwap = onSwapExercises) { _, (id, exercise) ->
             EditExerciseRow(
                 exercise = exercise,
@@ -74,13 +76,13 @@ fun EditGroupRow(
         IconButton(onClick = removeGroup) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = "Delete Group"
+                contentDescription = stringResource(id = R.string.delete_group)
             )
         }
         IconButton(onClick = onEditClicked) {
             Icon(
                 imageVector = Icons.Default.Edit,
-                contentDescription = "Edit Group"
+                contentDescription = stringResource(id = R.string.edit_group)
             )
         }
     }
@@ -106,13 +108,13 @@ fun EditExerciseRow(
         IconButton(onClick = removeExercise) {
             Icon(
                 imageVector = Icons.Default.Delete,
-                contentDescription = "Delete Exercise"
+                contentDescription = stringResource(id = R.string.delete_exercise)
             )
         }
         IconButton(onClick = onEditClicked) {
             Icon(
                 imageVector = Icons.Default.Edit,
-                contentDescription = "Edit Exercise"
+                contentDescription = stringResource(id = R.string.edit_exercise)
             )
         }
     }

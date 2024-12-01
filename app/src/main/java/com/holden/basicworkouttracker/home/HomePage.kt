@@ -15,14 +15,12 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.unit.dp
+import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.ui.theme.DefaultButton
@@ -62,8 +60,8 @@ fun HomePage(
             initialGroup = mainViewModel.editingGroup,
             showPopup = mainViewModel.editingGroup != null,
             exercises = exercises,
-            "Edit Exercise Group",
-            doneButtonText = "Save",
+            headerText = stringResource(id = R.string.edit_exercise_group),
+            doneButtonText = stringResource(id = R.string.save),
             onFinishedEditing = mainViewModel::onEditGroupComplete,
             onPopupClosed = mainViewModel::onEditGroupPopupClosed
         )
@@ -73,8 +71,8 @@ fun HomePage(
             onPopupClosed = mainViewModel::onNewExercisePopupClosed
         )
         EditExercisePopup(
-            headerText = "Edit Exercise",
-            doneText = "Save",
+            headerText = stringResource(id = R.string.edit_exercise),
+            doneText = stringResource(id = R.string.save),
             initialExercise = mainViewModel.editingExercise,
             showPopup = mainViewModel.editingExercise != null,
             onExerciseUpdated = mainViewModel::onEditExerciseComplete,
@@ -97,7 +95,11 @@ private fun EditButtonsRow(
         ) {
             Text(
                 color = MaterialTheme.colorScheme.onBackground,
-                text = if (mainViewModel.editMode) "end editing" else "edit"
+                text = if (mainViewModel.editMode) {
+                    stringResource(id = R.string.end_editing)
+                } else {
+                    stringResource(id = R.string.edit)
+                }
             )
         }
         if (mainViewModel.editMode) {
@@ -110,7 +112,7 @@ private fun EditButtonsRow(
             ) {
                 Text(
                     color = MaterialTheme.colorScheme.onBackground,
-                    text = "Add Exercise"
+                    text = stringResource(id = R.string.add_exercise)
                 )
             }
             Button(
@@ -122,7 +124,7 @@ private fun EditButtonsRow(
             ) {
                 Text(
                     color = MaterialTheme.colorScheme.onBackground,
-                    text = "Add Group"
+                    text = stringResource(id = R.string.add_group)
                 )
             }
         }
@@ -231,7 +233,11 @@ fun ExerciseRow(
                     if (exercise.history.isNotEmpty()) {
                         for (workout in exercise.history.first().sets) {
                             Text(
-                                text = "${workout.weight} lbs x ${workout.reps}",
+                                text = stringResource(
+                                    id = R.string.sets_by_reps,
+                                    workout.weight.toString(),
+                                    workout.reps
+                                ),
                                 modifier = Modifier.padding(horizontal = 10.dp)
                             )
                         }
