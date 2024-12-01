@@ -42,62 +42,14 @@ fun HomePage(
         val exercises = mainViewModel.exercisesAsState
         val groups = mainViewModel.groupsAsState
         Column {
-            var editing by remember {
-                mutableStateOf(false)
-            }
             EditableExerciseList(
-                editing = editing,
+                modifier = Modifier.weight(1f),
                 groups = groups,
                 exercises = exercises,
-                onSwapExercises = mainViewModel::swapExercises,
-                onSwapGroups = mainViewModel::swapGroups,
-                removeExercise = mainViewModel::removeExercise,
-                removeGroup = mainViewModel::removeGroup,
-                showExercise = showExercise,
-                editGroup = mainViewModel::editGroupButtonClicked,
-                editExercise = mainViewModel::editExerciseButtonClicked
+                mainViewModel = mainViewModel,
+                showExercise = showExercise
             )
-            Row {
-                Button(
-                    colors = ButtonDefaults.buttonColors(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.background
-                    ),
-                    onClick = { editing = !editing }
-                ) {
-                    Text(
-                        color = MaterialTheme.colorScheme.onBackground,
-                        text = if (editing) "end editing" else "edit"
-                    )
-                }
-                if (editing) {
-                    Button(
-                        colors = ButtonDefaults.buttonColors(
-                            MaterialTheme.colorScheme.background,
-                            MaterialTheme.colorScheme.background
-                        ),
-                        onClick = mainViewModel::addExerciseButtonClicked
-                    ) {
-                        Text(
-                            color = MaterialTheme.colorScheme.onBackground,
-                            text = "Add Exercise"
-                        )
-                    }
-                    Button(
-                        colors = ButtonDefaults.buttonColors(
-                            MaterialTheme.colorScheme.background,
-                            MaterialTheme.colorScheme.background
-                        ),
-                        onClick = mainViewModel::addGroupButtonClicked
-                    ) {
-                        Text(
-                            color = MaterialTheme.colorScheme.onBackground,
-                            text = "Add Group"
-                        )
-                    }
-                }
-
-            }
+            EditButtonsRow(mainViewModel = mainViewModel)
         }
 
         AddGroupPopup(
@@ -132,32 +84,74 @@ fun HomePage(
 }
 
 @Composable
+private fun EditButtonsRow(
+    mainViewModel: MainViewModel
+) {
+    Row {
+        Button(
+            colors = ButtonDefaults.buttonColors(
+                MaterialTheme.colorScheme.background,
+                MaterialTheme.colorScheme.background
+            ),
+            onClick = mainViewModel::editButtonClicked
+        ) {
+            Text(
+                color = MaterialTheme.colorScheme.onBackground,
+                text = if (mainViewModel.editMode) "end editing" else "edit"
+            )
+        }
+        if (mainViewModel.editMode) {
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.background
+                ),
+                onClick = mainViewModel::addExerciseButtonClicked
+            ) {
+                Text(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    text = "Add Exercise"
+                )
+            }
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.background
+                ),
+                onClick = mainViewModel::addGroupButtonClicked
+            ) {
+                Text(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    text = "Add Group"
+                )
+            }
+        }
+    }
+}
+
+@Composable
 fun EditableExerciseList(
-    editing: Boolean,
+    modifier: Modifier,
     groups: OrderedMap<String, ExerciseGroup>,
     exercises: OrderedMap<String, Exercise>,
-    onSwapExercises: (Int, Int) -> Unit,
-    onSwapGroups: (Int, Int) -> Unit,
-    removeExercise: (String) -> Unit,
-    removeGroup: (String) -> Unit,
-    showExercise: (String) -> Unit,
-    editGroup: (String) -> Unit,
-    editExercise: (String) -> Unit
+    mainViewModel: MainViewModel,
+    showExercise: (String) -> Unit
 ) {
     val exerciseList = exercises.toList()
-    if (editing) {
+    if (mainViewModel.editMode) {
         EditExercises(
+            modifier,
             groups,
-            onSwapGroups,
-            editGroup,
-            editExercise,
-            removeGroup,
+            mainViewModel::swapGroups,
+            mainViewModel::editGroupButtonClicked,
+            mainViewModel::editExerciseButtonClicked,
+            mainViewModel::removeGroup,
             exerciseList,
-            onSwapExercises,
-            removeExercise
+            mainViewModel::swapExercises,
+            mainViewModel::removeExercise
         )
     } else {
-        LazyColumn {
+        LazyColumn(modifier = modifier) {
             items(groups) { _, group ->
                 if (group == null) return@items
                 GroupView(group, exercises, showExercise)

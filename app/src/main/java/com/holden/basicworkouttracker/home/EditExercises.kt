@@ -23,6 +23,7 @@ import com.holden.basicworkouttracker.util.OrderedMap
 
 @Composable
 fun EditExercises(
+    modifier: Modifier,
     groups: OrderedMap<String, ExerciseGroup>,
     onSwapGroups: (Int, Int) -> Unit,
     editGroup: (String) -> Unit,
@@ -33,7 +34,7 @@ fun EditExercises(
     removeExercise: (String) -> Unit
 ) {
     val groupList = groups.toList()
-    Column {
+    Column(modifier = modifier) {
         Text(text = "Groups")
         DragDropColumn(items = groupList, onSwap = onSwapGroups) { _, (id, group) ->
             EditGroupRow(
