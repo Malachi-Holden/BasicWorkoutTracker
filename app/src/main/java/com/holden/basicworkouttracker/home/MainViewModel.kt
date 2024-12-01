@@ -21,6 +21,11 @@ class MainViewModel(
     val groupsFlow = MutableStateFlow(initialGroups)
     val exercisesFlow = MutableStateFlow(initialExercises)
 
+    val _editMode = MutableStateFlow(false)
+    val editMode: Boolean
+        @Composable
+        get() = _editMode.collectAsState().value
+
     val groupsAsState: OrderedMap<String, ExerciseGroup>
         @Composable
         get() = groupsFlow.collectAsState().value
@@ -70,6 +75,10 @@ class MainViewModel(
     private fun updateGroups(newGroups: OrderedMap<String, ExerciseGroup>) {
         groupsFlow.value = newGroups
         saveGroups(newGroups)
+    }
+
+    fun editButtonClicked() {
+        _editMode.value = !_editMode.value
     }
 
     fun addGroupButtonClicked() {
