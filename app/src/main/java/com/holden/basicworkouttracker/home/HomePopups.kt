@@ -69,7 +69,7 @@ fun EditGroupPopup(
     ) {
         Column {
             var group by remember {
-                mutableStateOf(initialGroup ?: ExerciseGroup("", listOf()))
+                mutableStateOf(initialGroup ?: ExerciseGroup("", "", listOf()))
             }
             Text(text = headerText)
             TextField(
@@ -162,7 +162,7 @@ fun EditExercisePopup(
         Column {
             Text(text = headerText)
             var exercise by remember {
-                mutableStateOf(initialExercise ?: Exercise("", listOf()))
+                mutableStateOf(initialExercise ?: Exercise("", "", listOf()))
             }
             TextField(
                 value = exercise.title,

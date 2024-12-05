@@ -225,6 +225,7 @@ fun AddSetPopup(
                 val weightDouble = weight.toDoubleOrNull()
 
                 val workout = if (repsInt == null || weightDouble == null) null else Workout(
+                    "",
                     repsInt,
                     weightDouble
                 )

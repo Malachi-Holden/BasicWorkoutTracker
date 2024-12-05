@@ -120,7 +120,7 @@ fun ExerciseView(
                 .align(Alignment.BottomEnd)
                 .padding(20.dp),
             onClick = {
-                val day = ExerciseForDay(currentDate(), listOf())
+                val day = ExerciseForDay("", currentDate(), listOf())
                 exerciseViewModel.addDay(day)
                 onDaySelected(0, true)
             }
