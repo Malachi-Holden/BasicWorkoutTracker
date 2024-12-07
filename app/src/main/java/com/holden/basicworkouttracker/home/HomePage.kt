@@ -215,34 +215,40 @@ fun ExerciseRow(
         modifier = Modifier
             .fillMaxWidth()
     ) {
+
         DefaultButton(
-            onClick = showExercise,
-            modifier = Modifier.fillMaxWidth(.5f)
+            onClick = showExercise
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
+                    .padding(horizontal = 5.dp)
             ) {
                 Text(
                     text = exercise.title,
                     style = MaterialTheme.typography.titleLarge
                 )
-                Column(
-                    modifier = Modifier
-                        .padding(start = 5.dp)
-                        .singleEdge(MaterialTheme.colorScheme.onPrimary, 2.dp, Side.Start)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (exercise.history.isNotEmpty()) {
-                        for (workout in exercise.history.first().sets) {
-                            Text(
-                                text = stringResource(
-                                    id = R.string.sets_by_reps,
-                                    workout.weight.toString(),
-                                    workout.reps
-                                ),
-                                modifier = Modifier.padding(horizontal = 10.dp)
-                            )
+                        Text(text = exercise.history.first().date?.toString() ?: "")
+                    }
+                    Column(
+                        modifier = Modifier
+                            .padding(start = 5.dp)
+                            .singleEdge(MaterialTheme.colorScheme.onPrimary, 2.dp, Side.Start)
+                    ) {
+                        if (exercise.history.isNotEmpty()) {
+                            for (workout in exercise.history.first().sets) {
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.sets_by_reps,
+                                        workout.weight.toString(),
+                                        workout.reps
+                                    ),
+                                    modifier = Modifier.padding(horizontal = 10.dp)
+                                )
+                            }
                         }
                     }
                 }
