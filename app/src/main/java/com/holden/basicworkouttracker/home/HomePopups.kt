@@ -75,7 +75,13 @@ fun EditGroupPopup(
             TextField(
                 value = group.title,
                 onValueChange = { group = group.copy(title = it) },
-                placeholder = { Text(text = stringResource(id = R.string.name)) }
+                placeholder = { Text(text = stringResource(id = R.string.name)) },
+                singleLine = true
+            )
+            TextField(
+                value = group.notes,
+                onValueChange = { group = group.copy(notes = it) },
+                placeholder = { Text(text = stringResource(id = R.string.notes)) }
             )
             DragDropColumn(
                 items = group.exerciseIds,
@@ -168,6 +174,11 @@ fun EditExercisePopup(
                 value = exercise.title,
                 onValueChange = { exercise = exercise.copy(title = it) },
                 placeholder = { Text(text = stringResource(id = R.string.name)) }
+            )
+            TextField(
+                value = exercise.notes,
+                onValueChange = { exercise = exercise.copy(notes = it) },
+                placeholder = { Text(text = stringResource(id = R.string.notes)) }
             )
             Row {
                 DefaultButton(onClick = onPopupClosed) {

@@ -21,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,14 @@ fun ExerciseView(
                 style = MaterialTheme.typography.displayLarge,
                 modifier = Modifier.padding(15.dp)
             )
+
+            TextField(
+                modifier = Modifier.padding(5.dp).fillMaxWidth(),
+                value = exercise.notes,
+                onValueChange = exerciseViewModel::updateNotes,
+                placeholder = { Text(text = stringResource(id = R.string.notes)) }
+            )
+
             if (exercise.history.isNotEmpty()) {
                 Column(
                     modifier = Modifier
