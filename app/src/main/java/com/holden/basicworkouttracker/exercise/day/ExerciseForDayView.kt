@@ -81,7 +81,11 @@ fun ExerciseForDayView(
                     .singleEdge(MaterialTheme.colorScheme.onBackground, 2.dp, Side.Bottom)
                     .padding(5.dp)
             ) {
-                Text(text = title, style = MaterialTheme.typography.displayLarge)
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.displayLarge,
+                    modifier = Modifier.weight(1f)
+                )
                 Text(
                     modifier = Modifier.clickable {
                         dayViewModel.showCalendar()
