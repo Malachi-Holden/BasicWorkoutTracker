@@ -91,6 +91,12 @@ fun ExerciseForDayView(
                     maxLines = 1
                 )
             }
+            TextField(
+                modifier = Modifier.padding(10.dp).fillMaxWidth(),
+                value = exerciseForDay.notes,
+                onValueChange = dayViewModel::updateNotes,
+                placeholder = { Text(text = stringResource(id = R.string.notes)) }
+            )
             SetListView(
                 sets = exerciseForDay.sets,
                 modifier = Modifier.padding(15.dp),
@@ -219,14 +225,23 @@ fun AddSetPopup(
             val (reps, setReps) = remember {
                 mutableStateOf(initialWorkout?.reps?.toString() ?: "")
             }
+            val (notes, setNotes) = remember {
+                mutableStateOf(initialWorkout?.notes ?: "")
+            }
             Column(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
                 Text(text = title)
                 val repsInt = reps.toIntOrNull()
                 val weightDouble = weight.toDoubleOrNull()
 
                 val workout = if (repsInt == null || weightDouble == null) null else Workout(
+                    notes,
                     repsInt,
                     weightDouble
+                )
+                TextField(
+                    value = notes,
+                    onValueChange = setNotes,
+                    placeholder = { Text(text = stringResource(id = R.string.notes)) }
                 )
 
                 TextField(
@@ -308,26 +323,32 @@ fun SetListView(
         items(sets.size) { setIndex ->
             val workout = sets[setIndex]
             val showActions = setIndex == actionsIndex
-            if (onDeleteSet == null || onUpdateSet == null || onCopySet == null) {
-                Text(
-                    text = stringResource(id = R.string.sets_by_reps, workout.weight.toString(), workout.reps),
-                    style = textStyle,
-                    fontWeight = fontWeight
-                )
-            } else {
-                SetActionRow(
-                    onLongPress = { actionsIndex = if (showActions) null else setIndex },
-                    onDeleteSet = {
-                        onDeleteSet(setIndex)
-                        actionsIndex = null
-                    },
-                    onUpdateSet = { onUpdateSet(setIndex) },
-                    onCopySet = { onCopySet(setIndex) },
-                    workout = workout,
-                    showActions = showActions,
-                    onCalculatePlates = { onShowCalculator?.let { it(workout.weight) } }
-                )
+            Column {
+                if (onDeleteSet == null || onUpdateSet == null || onCopySet == null) {
+                    Text(
+                        text = stringResource(id = R.string.sets_by_reps, workout.weight.toString(), workout.reps),
+                        style = textStyle,
+                        fontWeight = fontWeight
+                    )
+                } else {
+                    SetActionRow(
+                        onLongPress = { actionsIndex = if (showActions) null else setIndex },
+                        onDeleteSet = {
+                            onDeleteSet(setIndex)
+                            actionsIndex = null
+                        },
+                        onUpdateSet = { onUpdateSet(setIndex) },
+                        onCopySet = { onCopySet(setIndex) },
+                        workout = workout,
+                        showActions = showActions,
+                        onCalculatePlates = { onShowCalculator?.let { it(workout.weight) } }
+                    )
+                }
+                if (workout.notes.isNotEmpty()) {
+                    Text(text = workout.notes)
+                }
             }
+
         }
     }
 }

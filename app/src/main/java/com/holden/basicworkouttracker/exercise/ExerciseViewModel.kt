@@ -60,4 +60,12 @@ class ExerciseViewModel(
         val showDelete = _deleteIndex.value == dayIndex
         _deleteIndex.value = if (showDelete) null else dayIndex
     }
+
+    fun updateNotes(newNotes: String) = bindNullable {
+        val exercise = exercises.value[exerciseKey.value].bind()
+        exercises.value.replace(
+            exercise.copy(notes = newNotes),
+            exerciseKey.value.bind()
+        )
+    }?.let(setExercises)
 }

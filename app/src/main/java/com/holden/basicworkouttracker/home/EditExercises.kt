@@ -70,6 +70,7 @@ fun EditGroupRow(
             .fillMaxWidth()
     ) {
         Text(
+            modifier = Modifier.weight(1f),
             text = group.title,
             style = MaterialTheme.typography.titleLarge.copy(fontStyle = FontStyle.Italic)
         )
@@ -102,6 +103,7 @@ fun EditExerciseRow(
             .fillMaxWidth()
     ){
         Text(
+            modifier = Modifier.weight(1f),
             text = exercise.title,
             style = MaterialTheme.typography.titleLarge
         )

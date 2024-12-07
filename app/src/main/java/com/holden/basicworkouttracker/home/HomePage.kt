@@ -184,6 +184,9 @@ fun GroupView(
                 .padding(start = 10.dp)
                 .padding(vertical = 13.dp)
         ) {
+            if (group.notes.isNotEmpty()) {
+                Text(text = group.notes)
+            }
             for (exerciseId in group.exerciseIds) {
                 val exercise = allExercises[exerciseId] ?: continue
                 ExerciseRow(exercise = exercise, showExercise = { showExercise(exerciseId) })

@@ -149,6 +149,12 @@ class DayViewModel(
         _editSetIndex.value = null
     }
 
+    fun updateNotes(newNotes: String) = bindNullable {
+        updateExerciseForDay(exerciseForDay.copy(
+            notes = newNotes
+        ))
+    }
+
     private fun updateExerciseForDay(newDay: ExerciseForDay) = bindNullable {
         exercises.value.replace(
             exercise.copy(
@@ -157,6 +163,7 @@ class DayViewModel(
             exerciseKey.value.bind()
         )
     }?.let(setExercises)
+
 
     @Composable
     fun loadPersistedPlates() = LocalContext.current.loadPlates(LOCAL_PLATES)

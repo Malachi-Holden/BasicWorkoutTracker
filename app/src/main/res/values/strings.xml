@@ -57,5 +57,6 @@
     <string name="available_plates">Available Plates</string>
     <string name="save_plate_configuration">Save plate configuration</string>
     <string name="remove_item">Remove item</string>
-    <string name="add_item">Add item</string>\
+    <string name="add_item">Add item</string>
+    <string name="notes">Notes</string>\
 </resources>
