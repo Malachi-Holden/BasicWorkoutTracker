@@ -59,6 +59,7 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.documentfile:documentfile:1.0.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.1")
     implementation("androidx.recyclerview:recyclerview:1.3.2")
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.0")
