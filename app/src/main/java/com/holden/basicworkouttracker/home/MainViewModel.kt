@@ -1,14 +1,19 @@
 package com.holden.basicworkouttracker.home
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.exercise.ExerciseViewModel
+import com.holden.basicworkouttracker.persistence.BWTData
+import com.holden.basicworkouttracker.persistence.LOCAL_PLATES
+import com.holden.basicworkouttracker.persistence.savePlates
 import com.holden.basicworkouttracker.util.OrderedMap
 import com.holden.basicworkouttracker.util.map
 import com.holden.basicworkouttracker.util.swap
+import com.holden.basicworkouttracker.util.toOrderedMap
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.UUID
 
@@ -66,6 +71,16 @@ class MainViewModel(
     val showAddExercise: Boolean
         @Composable
         get() = _showAddExercise.collectAsState().value
+
+    fun loadFromBWTData(
+        context: Context,
+        data: BWTData
+    ) {
+        updateExercises(data.exercises.toOrderedMap())
+        updateGroups(data.groups.toOrderedMap())
+        val (bar, weights) = data.plates
+        context.savePlates(LOCAL_PLATES, weights, bar)
+    }
 
     private fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
         exercisesFlow.value = newExercises

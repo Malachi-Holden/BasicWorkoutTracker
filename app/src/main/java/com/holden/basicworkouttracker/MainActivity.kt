@@ -13,13 +13,18 @@ import androidx.navigation.compose.rememberNavController
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.home.MainViewModel
+import com.holden.basicworkouttracker.persistence.LOCAL_EXERCISES
+import com.holden.basicworkouttracker.persistence.LOCAL_GROUPS
+import com.holden.basicworkouttracker.persistence.loadExercises
+import com.holden.basicworkouttracker.persistence.loadGroups
+import com.holden.basicworkouttracker.persistence.saveExercises
+import com.holden.basicworkouttracker.persistence.saveGroups
 import com.holden.basicworkouttracker.ui.theme.BasicWorkoutTrackerTheme
 import com.holden.basicworkouttracker.util.OrderedMap
 import com.holden.basicworkouttracker.util.buildFactory
 import com.holden.basicworkouttracker.util.orderedMapOf
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.UUID
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

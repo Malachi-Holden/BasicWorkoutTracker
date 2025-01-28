@@ -43,23 +43,20 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.holden.basicworkouttracker.LOCAL_PLATES
+import com.holden.basicworkouttracker.persistence.LOCAL_PLATES
 import com.holden.basicworkouttracker.PlatesToWeight
 import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.WeightToPlates
 import com.holden.basicworkouttracker.exercise.Workout
-import com.holden.basicworkouttracker.savePlates
+import com.holden.basicworkouttracker.persistence.savePlates
 import com.holden.basicworkouttracker.ui.theme.DefaultButton
 import com.holden.basicworkouttracker.util.ModalView
 import com.holden.basicworkouttracker.util.Side
 import com.holden.basicworkouttracker.util.singleEdge
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.toLocalDateTime
 
 
 @Composable
@@ -149,11 +146,11 @@ fun ExerciseForDayView(
         )
         ModalView(visible = dayViewModel.showCalculator, onClose = dayViewModel::hideCalculator) {
             val context = LocalContext.current
-            val persistedPlates = dayViewModel.loadPersistedPlates()
+            val (initialBar, initialPlates) = dayViewModel.loadPersistedPlates()
             WeightToPlates(
                 dayViewModel.weightForCalculator,
-                persistedPlates.second,
-                persistedPlates.first,
+                initialPlates,
+                initialBar,
                 savePlates = { bar, weights ->
                     context.savePlates(LOCAL_PLATES, weights, bar)
                 }

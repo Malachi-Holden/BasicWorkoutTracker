@@ -58,5 +58,13 @@
     <string name="save_plate_configuration">Save plate configuration</string>
     <string name="remove_item">Remove item</string>
     <string name="add_item">Add item</string>
-    <string name="notes">Notes</string>\
+    <string name="notes">Notes</string>
+    <string name="choose_file_error">Error choosing file location</string>
+    <string name="save_file">basic_workout_tracker_save.json</string>
+    <string name="choose_save_location">Choose save location</string>
+    <string name="null_file_uri">File uri was null</string>
+    <string name="no_file_found">No file found at uri: %s</string>
+    <string name="export_data">Export to file</string>
+    <string name="import_data">Import from file</string>
+    <string name="corrupt_data">Data from file was corrupt</string>\
 </resources>

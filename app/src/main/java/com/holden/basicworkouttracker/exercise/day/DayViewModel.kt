@@ -3,11 +3,11 @@ package com.holden.basicworkouttracker.exercise.day
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
-import com.holden.basicworkouttracker.LOCAL_PLATES
+import com.holden.basicworkouttracker.persistence.LOCAL_PLATES
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseForDay
 import com.holden.basicworkouttracker.exercise.Workout
-import com.holden.basicworkouttracker.loadPlates
+import com.holden.basicworkouttracker.persistence.loadPlates
 import com.holden.basicworkouttracker.util.NullableScope
 import com.holden.basicworkouttracker.util.OrderedMap
 import com.holden.basicworkouttracker.util.bindNullable
@@ -16,7 +16,6 @@ import com.holden.basicworkouttracker.util.replaced
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
