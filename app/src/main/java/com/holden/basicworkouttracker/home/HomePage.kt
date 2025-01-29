@@ -1,8 +1,10 @@
 package com.holden.basicworkouttracker.home
 
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -197,13 +200,15 @@ fun EditableExerciseList(
         )
     } else {
         LazyColumn(modifier = modifier) {
-            items(groups) { _, group ->
+            items(groups) { id, group ->
                 if (group == null) return@items
-                GroupView(group, exercises, showExercise)
+                GroupView(group, exercises, showExercise, toggleGroupCollapsed = {
+                    mainViewModel.toggleGroupCollapsed(id)
+                })
             }
             items(exercises) { key, exercise ->
                 if (exercise?.showOnHomepage != true) return@items
-                Box(modifier = Modifier.padding(start = 15.dp)) {
+                Box(modifier = Modifier.padding(horizontal = 15.dp)) {
                     ExerciseRow(exercise = exercise, showExercise = { showExercise(key) })
                 }
             }
@@ -211,33 +216,56 @@ fun EditableExerciseList(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GroupView(
     group: ExerciseGroup,
     allExercises: Map<String, Exercise>,
-    showExercise: (String) -> Unit
+    showExercise: (String) -> Unit,
+    toggleGroupCollapsed: () -> Unit
 ) {
-    Box{
-        Column(
-            modifier = Modifier
-                .padding(start = 5.dp)
-                .padding(vertical = 8.dp)
-                .fillMaxWidth()
-                .border(2.dp, MaterialTheme.colorScheme.onBackground)
-                .padding(start = 10.dp)
-                .padding(vertical = 13.dp)
-        ) {
-            if (group.notes.isNotEmpty()) {
-                Text(text = group.notes)
+    Box(
+        modifier = Modifier.combinedClickable(
+            onClick = {},
+            onLongClick = toggleGroupCollapsed
+        )
+    ) {
+        if (group.collapsed) {
+            Divider(
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .padding(vertical = 18.dp)
+                    .padding(horizontal = 10.dp)
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .padding(horizontal = 5.dp)
+                    .padding(vertical = 8.dp)
+                    .fillMaxWidth()
+                    .border(2.dp, MaterialTheme.colorScheme.onBackground)
+                    .padding(horizontal = 10.dp)
+                    .padding(vertical = 13.dp)
+            ) {
+                if (group.notes.isNotEmpty()) {
+                    Text(text = group.notes)
+                }
+                for (exerciseId in group.exerciseIds) {
+                    val exercise = allExercises[exerciseId] ?: continue
+                    ExerciseRow(exercise = exercise, showExercise = { showExercise(exerciseId) })
+                }
             }
-            for (exerciseId in group.exerciseIds) {
-                val exercise = allExercises[exerciseId] ?: continue
-                ExerciseRow(exercise = exercise, showExercise = { showExercise(exerciseId) })
-            }
+        }
+        val titleHeightModifier = if (group.collapsed) {
+            Modifier.padding(top = 10.dp)
+        } else {
+            Modifier
         }
         Text(
             modifier = Modifier
                 .align(Alignment.TopStart)
+                .then(titleHeightModifier)
                 .padding(start = 25.dp)
                 .background(MaterialTheme.colorScheme.background)
                 .padding(horizontal = 3.dp),
@@ -245,7 +273,6 @@ fun GroupView(
             style = LocalTextStyle.current.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
     }
-
 }
 
 @Composable
@@ -278,7 +305,7 @@ fun ExerciseRow(
                     }
                     Column(
                         modifier = Modifier
-                            .padding(start = 5.dp)
+                            .padding(horizontal = 5.dp)
                             .singleEdge(MaterialTheme.colorScheme.onPrimary, 2.dp, Side.Start)
                     ) {
                         if (exercise.history.isNotEmpty()) {

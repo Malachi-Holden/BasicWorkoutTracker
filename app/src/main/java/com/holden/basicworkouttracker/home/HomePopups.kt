@@ -71,64 +71,65 @@ fun EditGroupPopup(
             var group by remember {
                 mutableStateOf(initialGroup ?: ExerciseGroup("", "", listOf()))
             }
-            Text(text = headerText)
-            TextField(
-                value = group.title,
-                onValueChange = { group = group.copy(title = it) },
-                placeholder = { Text(text = stringResource(id = R.string.name)) },
-                singleLine = true
-            )
-            TextField(
-                value = group.notes,
-                onValueChange = { group = group.copy(notes = it) },
-                placeholder = { Text(text = stringResource(id = R.string.notes)) }
-            )
-            DragDropColumn(
-                items = group.exerciseIds,
-                onSwap = { first, second ->
-                    group = group.copy(
-                        exerciseIds = group.exerciseIds.swapped(first, second)
-                    )
-                }
-            ) { i, id ->
-                val exercise = exercises[id] ?: return@DragDropColumn
-                Row {
-                    Text(text = exercise.title, modifier = Modifier.weight(1f))
-                    IconButton(onClick = { group = group.copy(exerciseIds = group.exerciseIds.filter { it != id }) }) {
-                        Icon(imageVector = Icons.Default.Clear, contentDescription = stringResource(
-                            id = R.string.remove_exercise_from_group
-                        ))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = headerText)
+                TextField(
+                    value = group.title,
+                    onValueChange = { group = group.copy(title = it) },
+                    placeholder = { Text(text = stringResource(id = R.string.name)) },
+                    singleLine = true
+                )
+                TextField(
+                    value = group.notes,
+                    onValueChange = { group = group.copy(notes = it) },
+                    placeholder = { Text(text = stringResource(id = R.string.notes)) }
+                )
+                DragDropColumn(
+                    items = group.exerciseIds,
+                    onSwap = { first, second ->
+                        group = group.copy(
+                            exerciseIds = group.exerciseIds.swapped(first, second)
+                        )
                     }
-                }
-            }
-            val groupIdSet = group.exerciseIds.toSet()
-            LazyColumn {
-                items(exercises.filter { it.first !in groupIdSet }) { id, exercise ->
-                    if (exercise == null) return@items
+                ) { i, id ->
+                    val exercise = exercises[id] ?: return@DragDropColumn
                     Row {
                         Text(text = exercise.title, modifier = Modifier.weight(1f))
-                        IconButton(onClick = { group = group.copy(exerciseIds = group.exerciseIds + id) }) {
-                            Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(
-                                id = R.string.add_exercise_to_group
+                        IconButton(onClick = { group = group.copy(exerciseIds = group.exerciseIds.filter { it != id }) }) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = stringResource(
+                                id = R.string.remove_exercise_from_group
                             ))
                         }
                     }
                 }
-                item {
-                    Row {
-                        DefaultButton(onClick = onPopupClosed) {
-                            Text(text = stringResource(id = R.string.cancel))
+                val groupIdSet = group.exerciseIds.toSet()
+                LazyColumn {
+                    items(exercises.filter { it.first !in groupIdSet }) { id, exercise ->
+                        if (exercise == null) return@items
+                        Row {
+                            Text(text = exercise.title, modifier = Modifier.weight(1f))
+                            IconButton(onClick = { group = group.copy(exerciseIds = group.exerciseIds + id) }) {
+                                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(
+                                    id = R.string.add_exercise_to_group
+                                ))
+                            }
                         }
-                        DefaultButton(onClick = {
-                            onFinishedEditing(group)
-                            onPopupClosed()
-                        }) {
-                            Text(text = doneButtonText)
-                        }
+                    }
+                    item {
                     }
                 }
             }
-
+            Row {
+                DefaultButton(onClick = onPopupClosed) {
+                    Text(text = stringResource(id = R.string.cancel))
+                }
+                DefaultButton(onClick = {
+                    onFinishedEditing(group)
+                    onPopupClosed()
+                }) {
+                    Text(text = doneButtonText)
+                }
+            }
         }
     }
 }
