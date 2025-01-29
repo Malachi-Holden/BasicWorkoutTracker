@@ -46,10 +46,7 @@ fun HomePage(
         .padding(5.dp)) {
         val exercises = mainViewModel.exercisesAsState
         val groups = mainViewModel.groupsAsState
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween
-        ) {
+        Column {
             EditableExerciseList(
                 modifier = Modifier.weight(1f),
                 groups = groups,
@@ -57,9 +54,7 @@ fun HomePage(
                 mainViewModel = mainViewModel,
                 showExercise = showExercise
             )
-            EditButtonsRow(
-                mainViewModel = mainViewModel
-            )
+            EditButtonsRow(mainViewModel = mainViewModel)
         }
 
         AddGroupPopup(
