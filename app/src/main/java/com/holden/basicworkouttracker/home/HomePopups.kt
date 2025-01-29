@@ -93,7 +93,7 @@ fun EditGroupPopup(
             ) { i, id ->
                 val exercise = exercises[id] ?: return@DragDropColumn
                 Row {
-                    Text(text = exercise.title)
+                    Text(text = exercise.title, modifier = Modifier.weight(1f))
                     IconButton(onClick = { group = group.copy(exerciseIds = group.exerciseIds.filter { it != id }) }) {
                         Icon(imageVector = Icons.Default.Clear, contentDescription = stringResource(
                             id = R.string.remove_exercise_from_group
@@ -106,7 +106,7 @@ fun EditGroupPopup(
                 items(exercises.filter { it.first !in groupIdSet }) { id, exercise ->
                     if (exercise == null) return@items
                     Row {
-                        Text(text = exercise.title)
+                        Text(text = exercise.title, modifier = Modifier.weight(1f))
                         IconButton(onClick = { group = group.copy(exerciseIds = group.exerciseIds + id) }) {
                             Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(
                                 id = R.string.add_exercise_to_group

@@ -3,9 +3,11 @@ package com.holden.basicworkouttracker.home
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
@@ -43,7 +46,10 @@ fun HomePage(
         .padding(5.dp)) {
         val exercises = mainViewModel.exercisesAsState
         val groups = mainViewModel.groupsAsState
-        Column {
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
             EditableExerciseList(
                 modifier = Modifier.weight(1f),
                 groups = groups,
@@ -51,7 +57,9 @@ fun HomePage(
                 mainViewModel = mainViewModel,
                 showExercise = showExercise
             )
-            EditButtonsRow(mainViewModel = mainViewModel)
+            EditButtonsRow(
+                mainViewModel = mainViewModel
+            )
         }
 
         AddGroupPopup(
@@ -131,44 +139,46 @@ private fun EditButtonsRow(
                     text = stringResource(id = R.string.add_group)
                 )
             }
-        }
-        val saveAction = buildSaveBWTAction()
-        Button(
-            colors = ButtonDefaults.buttonColors(
-                MaterialTheme.colorScheme.background,
-                MaterialTheme.colorScheme.background
-            ),
-            onClick = saveAction
-        ) {
-            Text(
-                color = MaterialTheme.colorScheme.onBackground,
-                text = stringResource(id = R.string.export_data)
-            )
-        }
-        val context = LocalContext.current
-        val loadAction = buildLoadBWTFromSaveAction { data ->
-            if (data != null) {
-                mainViewModel.loadFromBWTData(context, data)
-            } else {
-                Toast.makeText(
-                    context,
-                    R.string.corrupt_data,
-                    Toast.LENGTH_LONG
-                ).show()
+        } else {
+            val saveAction = buildSaveBWTAction()
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.background
+                ),
+                onClick = saveAction
+            ) {
+                Text(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    text = stringResource(id = R.string.export_data)
+                )
+            }
+            val context = LocalContext.current
+            val loadAction = buildLoadBWTFromSaveAction { data ->
+                if (data != null) {
+                    mainViewModel.loadFromBWTData(context, data)
+                } else {
+                    Toast.makeText(
+                        context,
+                        R.string.corrupt_data,
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+            Button(
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.background
+                ),
+                onClick = loadAction
+            ) {
+                Text(
+                    color = MaterialTheme.colorScheme.onBackground,
+                    text = stringResource(id = R.string.import_data)
+                )
             }
         }
-        Button(
-            colors = ButtonDefaults.buttonColors(
-                MaterialTheme.colorScheme.background,
-                MaterialTheme.colorScheme.background
-            ),
-            onClick = loadAction
-        ) {
-            Text(
-                color = MaterialTheme.colorScheme.onBackground,
-                text = stringResource(id = R.string.import_data)
-            )
-        }
+
     }
 }
 
