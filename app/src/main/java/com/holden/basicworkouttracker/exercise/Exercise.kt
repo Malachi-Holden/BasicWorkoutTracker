@@ -10,7 +10,8 @@ import kotlinx.serialization.Serializable
 data class ExerciseGroup(
     val title: String,
     val notes: String = "",
-    val exerciseIds: List<String>
+    val exerciseIds: List<String>,
+    val collapsed: Boolean = false
 )
 
 @Serializable

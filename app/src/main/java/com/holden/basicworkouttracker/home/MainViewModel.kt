@@ -11,6 +11,7 @@ import com.holden.basicworkouttracker.persistence.BWTData
 import com.holden.basicworkouttracker.persistence.LOCAL_PLATES
 import com.holden.basicworkouttracker.persistence.savePlates
 import com.holden.basicworkouttracker.util.OrderedMap
+import com.holden.basicworkouttracker.util.bindNullable
 import com.holden.basicworkouttracker.util.map
 import com.holden.basicworkouttracker.util.swap
 import com.holden.basicworkouttracker.util.toOrderedMap
@@ -146,6 +147,13 @@ class MainViewModel(
         updateExercises(
             exercisesFlow.value.map { key, exercise -> key to exercise.copy(showOnHomepage = exercise.showOnHomepage && key !in dontShowSet) }
         )
+    }
+
+    fun toggleGroupCollapsed(uuid: String) = bindNullable {
+        val group = groupsFlow.value[uuid].bind()
+        editGroup(uuid, group.copy(
+            collapsed = !group.collapsed
+        ))
     }
 
     private fun editGroup(uuid: String, newGroup: ExerciseGroup) {
