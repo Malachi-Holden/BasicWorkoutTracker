@@ -283,6 +283,7 @@ fun ExerciseRow(
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
+            .padding(bottom = 2.dp)
             .fillMaxWidth()
     ) {
 
