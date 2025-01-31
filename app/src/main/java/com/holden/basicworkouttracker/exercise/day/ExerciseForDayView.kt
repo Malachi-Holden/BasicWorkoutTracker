@@ -245,12 +245,6 @@ fun AddSetPopup(
                     placeholder = { Text(text = stringResource(id = R.string.notes)) }
                 )
 
-                TextField(
-                    value = reps,
-                    onValueChange = setReps,
-                    placeholder = { Text(text = stringResource(id = R.string.reps)) },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
-                )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
@@ -266,6 +260,12 @@ fun AddSetPopup(
                         Text(text = stringResource(id = R.string.calculate_by_plates))
                     }
                 }
+                TextField(
+                    value = reps,
+                    onValueChange = setReps,
+                    placeholder = { Text(text = stringResource(id = R.string.reps)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                )
 
                 Row {
                     Button(onClick = onClose) {
