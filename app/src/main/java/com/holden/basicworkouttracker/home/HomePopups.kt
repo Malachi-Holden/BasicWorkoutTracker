@@ -91,7 +91,7 @@ fun EditGroupPopup(
                             exerciseIds = group.exerciseIds.swapped(first, second)
                         )
                     }
-                ) { i, id ->
+                ) { _, id ->
                     val exercise = exercises[id] ?: return@DragDropColumn
                     Row {
                         Text(text = exercise.title, modifier = Modifier.weight(1f))

@@ -1,5 +1,6 @@
 package com.holden.basicworkouttracker.persistence
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Environment
@@ -28,6 +29,7 @@ import com.holden.basicworkouttracker.util.toPairs
 import kotlinx.serialization.Serializable
 import java.io.IOException
 
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class BWTData(
     val groups: List<Pair<String, ExerciseGroup>>,
@@ -98,7 +100,7 @@ fun buildSaveBWTAction(
         }
         try {
             saveDataToUri(context, resolvedUri, fileName, data)
-        } catch (e: BWTSaveError) {
+        } catch (_: BWTSaveError) {
             Toast.makeText(
                 context,
                 errorMessage,
@@ -107,7 +109,6 @@ fun buildSaveBWTAction(
         }
     }
 }
-
 
 @Composable
 fun buildLoadBWTFromSaveAction(onLoaded: (BWTData?) -> Unit): () -> Unit {
@@ -122,7 +123,7 @@ fun buildLoadBWTFromSaveAction(onLoaded: (BWTData?) -> Unit): () -> Unit {
         }
         try {
             onLoaded(loadDataFromUri(context, resolvedUri))
-        } catch (e: BWTSaveError) {
+        } catch (_: BWTSaveError) {
 
             onLoaded(null)
         }

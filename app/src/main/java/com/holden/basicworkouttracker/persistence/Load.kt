@@ -18,9 +18,9 @@ import java.io.InputStream
 import java.io.OutputStream
 
 
-val LOCAL_EXERCISES = "LOCAL_EXERCISES"
-val LOCAL_PLATES = "LOCAL_PLATES"
-val LOCAL_GROUPS = "LOCAL_GROUPS"
+const val LOCAL_EXERCISES = "LOCAL_EXERCISES"
+const val LOCAL_PLATES = "LOCAL_PLATES"
+const val LOCAL_GROUPS = "LOCAL_GROUPS"
 
 fun Context.loadGroups(groupsFile: String): OrderedMap<String, ExerciseGroup>?
 = loadBWTObject<List<Pair<String, ExerciseGroup>>>(groupsFile)

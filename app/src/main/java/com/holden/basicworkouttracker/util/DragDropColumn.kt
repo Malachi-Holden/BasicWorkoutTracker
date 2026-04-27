@@ -131,7 +131,7 @@ fun <T : Any> DragDropColumn(
             DraggableItem(
                 dragDropState = dragDropState,
                 index = index
-            ) { isDragging ->
+            ) { _ ->
                 Card {
                     itemContent(index, item)
                 }

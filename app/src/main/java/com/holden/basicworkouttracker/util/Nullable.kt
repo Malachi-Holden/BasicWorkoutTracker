@@ -15,7 +15,7 @@ fun <A> bindNullable(action: NullableScope.() -> A?): A? {
 
     return try {
         scope.action()
-    } catch (e: NullableScope.WasNull) {
+    } catch (_: NullableScope.WasNull) {
         null
     }
 }

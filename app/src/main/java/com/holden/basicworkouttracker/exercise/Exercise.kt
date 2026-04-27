@@ -1,11 +1,13 @@
 package com.holden.basicworkouttracker.exercise
 
+import android.annotation.SuppressLint
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
 
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class ExerciseGroup(
     val title: String,
@@ -14,6 +16,7 @@ data class ExerciseGroup(
     val collapsed: Boolean = false
 )
 
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class Exercise(
     val title: String,
@@ -22,6 +25,7 @@ data class Exercise(
     val showOnHomepage: Boolean = true
 )
 
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class ExerciseForDay(
     val notes: String = "",
@@ -29,6 +33,7 @@ data class ExerciseForDay(
     val sets: List<Workout>
 )
 
+@SuppressLint("UnsafeOptInUsageError")
 @Serializable
 data class Workout(
     val notes: String = "",

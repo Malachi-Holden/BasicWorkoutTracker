@@ -119,6 +119,3 @@ fun <K, V>OrderedMap<K,V>.filter(predicate: (Pair<K,V>) -> Boolean): OrderedMap<
 
 fun <K1, V1, K2, V2>OrderedMap<K1,V1>.map(transform: (K1, V1) -> Pair<K2, V2>): OrderedMap<K2, V2>
 = toList().map { (key, value) -> transform(key, value) }.toOrderedMap()
-//{
-//    val pairs = map { (key, value): Map.Entry<K1, V1> -> transform(key, value) }.toOrderedMap()
-//}
