@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
@@ -240,6 +241,23 @@ fun EditableExerciseList(
                 if (exercise?.showOnHomepage != true) return@items
                 Box(modifier = Modifier.padding(horizontal = 15.dp)) {
                     ExerciseRow(exercise = exercise, showExercise = { showExercise(key) })
+                }
+            }
+
+            item {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    DefaultButton(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        ),
+                        onClick = mainViewModel::addExerciseButtonClicked
+                    ) {
+                        Text(stringResource(R.string.add_exercise))
+                    }
                 }
             }
         }
