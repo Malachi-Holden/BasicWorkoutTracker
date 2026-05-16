@@ -160,10 +160,7 @@ class MainViewModel(
         updateGroups(
             groupsFlow.value.append(uuid to group)
         )
-        val dontShowSet = group.exerciseIds.toSet()
-        updateExercises(
-            exercisesFlow.value.map { key, exercise -> key to exercise.copy(showOnHomepage = exercise.showOnHomepage && key !in dontShowSet) }
-        )
+        updateExtraExercises()
     }
 
     fun toggleGroupCollapsed(uuid: String) = bindNullable {
@@ -177,10 +174,7 @@ class MainViewModel(
         updateGroups(
             groupsFlow.value.replace(newGroup, uuid)
         )
-        val dontShowSet = newGroup.exerciseIds.toSet()
-        updateExercises(
-            exercisesFlow.value.map { key, exercise -> key to exercise.copy(showOnHomepage = exercise.showOnHomepage && key !in dontShowSet) }
-        )
+        updateExtraExercises()
     }
 
     fun editExercise(uuid: String, newExercise: Exercise) {
@@ -199,6 +193,16 @@ class MainViewModel(
     fun removeGroup(groupKey: String) {
         updateGroups(
             groupsFlow.value.remove(groupKey)
+        )
+        updateExtraExercises()
+    }
+
+    fun updateExtraExercises() {
+        val noShowSet = groupsFlow.value.values.flatMap { it.exerciseIds }.toSet()
+        updateExercises(
+            exercisesFlow.value.map { key, exercise ->
+                key to exercise.copy(showOnHomepage = key !in noShowSet)
+            }
         )
     }
 
