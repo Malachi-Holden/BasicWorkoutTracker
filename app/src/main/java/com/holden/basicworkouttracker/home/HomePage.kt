@@ -16,6 +16,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -82,6 +83,13 @@ fun HomePage(
             doneButtonText = stringResource(id = R.string.save),
             onFinishedEditing = mainViewModel::onEditGroupComplete,
             onPopupClosed = mainViewModel::onEditGroupPopupClosed
+        )
+        DeleteGroupPopup(
+            showPopup = mainViewModel.deletingGroup != null,
+            groupId = mainViewModel.deletingGroupId,
+            group = mainViewModel.deletingGroup,
+            deleteGroup = mainViewModel::removeGroup,
+            onPopupClosed = mainViewModel::onDeleteGroupPopopClosed
         )
         AddExercisePopup(
             showPopup = mainViewModel.showAddExercise,
@@ -216,9 +224,17 @@ fun EditableExerciseList(
         LazyColumn(modifier = modifier) {
             items(groups) { id, group ->
                 if (group == null) return@items
-                GroupView(id, group, exercises, showExercise, mainViewModel::editGroupButtonClicked, toggleGroupCollapsed = {
-                    mainViewModel.toggleGroupCollapsed(id)
-                })
+                GroupView(
+                    id,
+                    group,
+                    exercises,
+                    showExercise,
+                    mainViewModel::editGroupButtonClicked,
+                    mainViewModel::deleteGroupButtonClicked,
+                    toggleGroupCollapsed = {
+                        mainViewModel.toggleGroupCollapsed(id)
+                    }
+                )
             }
             items(exercises) { key, exercise ->
                 if (exercise?.showOnHomepage != true) return@items
@@ -238,6 +254,7 @@ fun GroupView(
     allExercises: Map<String, Exercise>,
     showExercise: (String) -> Unit,
     editGroup: (String) -> Unit,
+    deleteGroup: (String) -> Unit,
     toggleGroupCollapsed: () -> Unit
 ) {
     Box(
@@ -290,13 +307,25 @@ fun GroupView(
             style = LocalTextStyle.current.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
         OutlinedIconButton(modifier = Modifier.align(Alignment.TopEnd)
+            .padding(end = 75.dp)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 3.dp),
+            shape = CircleShape,
+            onClick = {
+                deleteGroup(groupId)
+            }
+        ) {
+            Icon(Icons.Default.Delete, stringResource(R.string.delete_group))
+        }
+        OutlinedIconButton(modifier = Modifier.align(Alignment.TopEnd)
             .padding(end = 25.dp)
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 3.dp),
             shape = CircleShape,
             onClick = {
                 editGroup(groupId)
-            }) {
+            }
+        ) {
             Icon(Icons.Default.Edit, stringResource(R.string.edit))
         }
     }
