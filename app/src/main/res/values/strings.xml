@@ -64,7 +64,7 @@
     <string name="choose_save_location">Choose save location</string>
     <string name="null_file_uri">File uri was null</string>
     <string name="no_file_found">No file found at uri: %s</string>
-    <string name="export_data">Export to file</string>
-    <string name="import_data">Import from file</string>
+    <string name="export_data">Export</string>
+    <string name="import_data">Import</string>
     <string name="corrupt_data">Data from file was corrupt</string>\
 </resources>
