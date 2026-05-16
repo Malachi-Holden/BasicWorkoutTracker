@@ -12,11 +12,18 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.exercise.Exercise
@@ -202,7 +210,7 @@ fun EditableExerciseList(
         LazyColumn(modifier = modifier) {
             items(groups) { id, group ->
                 if (group == null) return@items
-                GroupView(group, exercises, showExercise, toggleGroupCollapsed = {
+                GroupView(id, group, exercises, showExercise, mainViewModel::editGroupButtonClicked, toggleGroupCollapsed = {
                     mainViewModel.toggleGroupCollapsed(id)
                 })
             }
@@ -219,9 +227,11 @@ fun EditableExerciseList(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GroupView(
+    groupId: String,
     group: ExerciseGroup,
     allExercises: Map<String, Exercise>,
     showExercise: (String) -> Unit,
+    editGroup: (String) -> Unit,
     toggleGroupCollapsed: () -> Unit
 ) {
     Box(
@@ -242,6 +252,7 @@ fun GroupView(
             Column(
                 modifier = Modifier
                     .padding(horizontal = 5.dp)
+                    .padding(top = 10.dp)
                     .padding(vertical = 8.dp)
                     .fillMaxWidth()
                     .border(2.dp, MaterialTheme.colorScheme.onBackground)
@@ -260,7 +271,7 @@ fun GroupView(
         val titleHeightModifier = if (group.collapsed) {
             Modifier.padding(top = 10.dp)
         } else {
-            Modifier
+            Modifier.padding(top = 10.dp)
         }
         Text(
             modifier = Modifier
@@ -272,6 +283,16 @@ fun GroupView(
             text = group.title,
             style = LocalTextStyle.current.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
+        OutlinedIconButton(modifier = Modifier.align(Alignment.TopEnd)
+            .padding(end = 25.dp)
+            .background(MaterialTheme.colorScheme.background)
+            .padding(horizontal = 3.dp),
+            shape = CircleShape,
+            onClick = {
+                editGroup(groupId)
+            }) {
+            Icon(Icons.Default.Edit, "Edit")
+        }
     }
 }
 
