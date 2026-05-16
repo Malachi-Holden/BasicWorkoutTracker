@@ -68,4 +68,12 @@ class ExerciseViewModel(
             exerciseKey.value.bind()
         )
     }?.let(setExercises)
+
+    fun updateTitle(newTitle: String) = bindNullable {
+        val exercise = exercises.value[exerciseKey.value].bind()
+        exercises.value.replace(
+            exercise.copy(title = newTitle),
+            exerciseKey.value.bind()
+        )
+    }?.let(setExercises)
 }

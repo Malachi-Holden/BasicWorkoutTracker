@@ -42,10 +42,12 @@ fun ExerciseView(
         ?: return EmptyExerciseView()
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = exercise.title,
-                style = MaterialTheme.typography.displayLarge,
-                modifier = Modifier.padding(15.dp)
+            TextField(
+                modifier = Modifier.padding(15.dp),
+                value = exercise.title,
+                onValueChange = exerciseViewModel::updateTitle,
+                textStyle = MaterialTheme.typography.displayLarge,
+                placeholder = { Text(text = stringResource(R.string.name)) }
             )
 
             TextField(
