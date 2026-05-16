@@ -5,6 +5,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,11 +15,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FilledIconButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -100,7 +103,10 @@ fun HomePage(
 private fun EditButtonsRow(
     mainViewModel: MainViewModel
 ) {
-    Row {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
         Button(
             colors = ButtonDefaults.buttonColors(
                 MaterialTheme.colorScheme.background,
@@ -128,18 +134,6 @@ private fun EditButtonsRow(
                 Text(
                     color = MaterialTheme.colorScheme.onBackground,
                     text = stringResource(id = R.string.add_exercise)
-                )
-            }
-            Button(
-                colors = ButtonDefaults.buttonColors(
-                    MaterialTheme.colorScheme.background,
-                    MaterialTheme.colorScheme.background
-                ),
-                onClick = mainViewModel::addGroupButtonClicked
-            ) {
-                Text(
-                    color = MaterialTheme.colorScheme.onBackground,
-                    text = stringResource(id = R.string.add_group)
                 )
             }
         } else {
@@ -181,7 +175,19 @@ private fun EditButtonsRow(
                 )
             }
         }
-
+        Button(
+            colors = ButtonDefaults.buttonColors(
+                MaterialTheme.colorScheme.background,
+                MaterialTheme.colorScheme.background
+            ),
+            onClick = mainViewModel::addGroupButtonClicked
+        ) {
+            Text(
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onBackground,
+                text = stringResource(id = R.string.add_group)
+            )
+        }
     }
 }
 
@@ -291,7 +297,7 @@ fun GroupView(
             onClick = {
                 editGroup(groupId)
             }) {
-            Icon(Icons.Default.Edit, "Edit")
+            Icon(Icons.Default.Edit, stringResource(R.string.edit))
         }
     }
 }
