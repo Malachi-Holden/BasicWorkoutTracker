@@ -283,17 +283,9 @@ fun GroupView(
             text = group.title,
             style = LocalTextStyle.current.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
-
-//        val editButtonHeightModifier = if (group.collapsed) {
-//
-//        } else {
-//            Modifier
-//        }
         OutlinedIconButton(modifier = Modifier.align(Alignment.TopEnd)
-//            .then(titleHeightModifier)
             .padding(end = 25.dp)
             .background(MaterialTheme.colorScheme.background)
-//            .border(2.dp, MaterialTheme.colorScheme.onBackground)
             .padding(horizontal = 3.dp),
             shape = CircleShape,
             onClick = {
