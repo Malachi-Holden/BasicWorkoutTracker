@@ -33,6 +33,39 @@ import com.holden.basicworkouttracker.util.items
 import com.holden.basicworkouttracker.util.swapped
 
 @Composable
+fun DeleteGroupPopup(
+    showPopup: Boolean,
+    deleteGroup: (String) -> Unit,
+    groupId: String?,
+    group: ExerciseGroup?,
+    onPopupClosed: () -> Unit
+) {
+    ModalView(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
+            .padding(5.dp),
+        visible = showPopup,
+        onClose = onPopupClosed
+    ) {
+        Column {
+            Text(stringResource(R.string.delete_confirmation, group?.title ?: ""))
+            Row {
+                DefaultButton(onClick =  onPopupClosed) {
+                    Text(stringResource(R.string.cancel))
+                }
+                DefaultButton(onClick = {
+                    if (groupId != null) {
+                        deleteGroup(groupId)
+                    }
+                }) {
+                    Text(stringResource(R.string.delete_group))
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun AddGroupPopup(
     showPopup: Boolean,
     exercises: OrderedMap<String, Exercise>,

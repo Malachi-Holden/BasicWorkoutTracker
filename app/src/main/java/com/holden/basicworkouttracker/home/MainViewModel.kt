@@ -59,6 +59,15 @@ class MainViewModel(
             .value
             ?.let { groupsAsState[it] }
 
+    private val _deleteingGroupId = MutableStateFlow<String?>(null)
+    val deletingGroupId: String?
+        @Composable
+        get() = _deleteingGroupId.collectAsState().value
+
+    val deletingGroup: ExerciseGroup?
+        @Composable
+        get() = deletingGroupId?.let { groupsAsState[it] }
+
     private val _editingExerciseId = MutableStateFlow<String?>(null)
 
     val editingExercise: Exercise?
@@ -105,6 +114,10 @@ class MainViewModel(
         _editingGroupId.value = id
     }
 
+    fun deleteGroupButtonClicked(id: String) {
+        _deleteingGroupId.value = id
+    }
+
     fun editExerciseButtonClicked(id: String) {
         _editingExerciseId.value = id
     }
@@ -119,6 +132,10 @@ class MainViewModel(
 
     fun onEditGroupPopupClosed() {
         _editingGroupId.value = null
+    }
+
+    fun onDeleteGroupPopopClosed() {
+        _deleteingGroupId.value = null
     }
 
     fun onEditExercisePopupClosed() {
