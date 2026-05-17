@@ -5,9 +5,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.holden.basicworkouttracker.exercise.day.ExerciseForDayView
 import com.holden.basicworkouttracker.exercise.ExerciseView
 import com.holden.basicworkouttracker.home.HomePage
@@ -19,8 +21,8 @@ enum class Nav {
 
 @Composable
 fun MainNavHost(
-    mainViewModel: MainViewModel,
-    navController: NavHostController
+    mainViewModel: MainViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
 ) {
     val exerciseViewModel = mainViewModel.exerciseViewModel
 

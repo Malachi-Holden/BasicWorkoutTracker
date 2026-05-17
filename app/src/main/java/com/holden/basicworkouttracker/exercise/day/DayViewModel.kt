@@ -15,16 +15,17 @@ import com.holden.basicworkouttracker.util.removed
 import com.holden.basicworkouttracker.util.replaced
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class DayViewModel(
     val exerciseKey: MutableStateFlow<String?>,
     val dayIndex: Int?,
     val exercises: StateFlow<OrderedMap<String, Exercise>>,
     val setExercises: (OrderedMap<String, Exercise>) -> Unit,
-    val showNewWorkout: Boolean
+    showNewWorkout: Boolean
 ) {
     val exerciseState: Exercise?
         @Composable
@@ -123,6 +124,7 @@ class DayViewModel(
     private val NullableScope.exerciseForDay
         get() = exercise.history[dayIndex.bind()]
 
+    @OptIn(ExperimentalTime::class)
     fun onDateUpdated(newDate: Instant) = bindNullable {
         updateExerciseForDay(
             exerciseForDay.copy(date = newDate.toLocalDateTime(TimeZone.UTC).date)

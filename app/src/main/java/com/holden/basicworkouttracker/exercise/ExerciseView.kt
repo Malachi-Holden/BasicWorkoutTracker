@@ -10,9 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
@@ -28,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -123,7 +121,7 @@ fun ExerciseView(
                             }
                             ) {
                                 Icon(
-                                    imageVector = Icons.Default.Delete,
+                                    painter = painterResource(R.drawable.delete),
                                     contentDescription = stringResource(id = R.string.delete_day)
                                 )
                             }
@@ -157,7 +155,10 @@ fun ExerciseView(
             }
         ) {
             Row(modifier = Modifier.padding(10.dp)) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.add_workout_day))
+                Icon(
+                    painter = painterResource(R.drawable.add),
+                    contentDescription = stringResource(id = R.string.add_workout_day)
+                )
                 Text(text = stringResource(id = R.string.new_day))
             }
         }

@@ -13,10 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.TextStyle
@@ -54,11 +51,13 @@ import com.holden.basicworkouttracker.ui.theme.DefaultButton
 import com.holden.basicworkouttracker.util.ModalView
 import com.holden.basicworkouttracker.util.Side
 import com.holden.basicworkouttracker.util.singleEdge
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun ExerciseForDayView(
     dayViewModel: DayViewModel
@@ -114,7 +113,7 @@ fun ExerciseForDayView(
             onClick = { dayViewModel.showAddSet.value = true }
         ) {
             Row(modifier = Modifier.padding(10.dp)) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(R.string.add_set))
+                Icon(painter = painterResource(R.drawable.add), contentDescription = stringResource(R.string.add_set))
                 Text(text = stringResource(R.string.new_set))
             }
         }
@@ -165,7 +164,7 @@ fun ExerciseForDayView(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)
 @Composable
 fun DayPickerView(
     currentDate: Instant?,
@@ -377,14 +376,14 @@ fun SetActionRow(
             Row() {
                 IconButton(onClick = onDeleteSet) {
                     Icon(
-                        imageVector = Icons.Default.Delete,
+                        painter = painterResource(R.drawable.delete),
                         contentDescription = stringResource(id = R.string.delete_set),
                         modifier = Modifier.padding(10.dp),
                     )
                 }
                 IconButton(onClick = onUpdateSet) {
                     Icon(
-                        imageVector = Icons.Default.Edit,
+                        painter = painterResource(R.drawable.edit),
                         contentDescription = stringResource(id = R.string.edit_set),
                         modifier = Modifier.padding(10.dp),
                     )

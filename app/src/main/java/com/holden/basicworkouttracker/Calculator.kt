@@ -8,9 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,6 +22,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -215,7 +213,7 @@ fun EditableTextColumn(
                         modifier = Modifier.weight(1f)
                     )
                     IconButton(onClick = { inputList.removeAt(i) }) {
-                        Icon(imageVector = Icons.Default.Delete, contentDescription = stringResource(
+                        Icon(painter = painterResource(R.drawable.delete), contentDescription = stringResource(
                             id = R.string.remove_item
                         ))
                     }
@@ -224,7 +222,7 @@ fun EditableTextColumn(
             }
         }
         IconButton(onClick = { inputList.add("") }) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = stringResource(id = R.string.add_item))
+            Icon(painter = painterResource(R.drawable.add), contentDescription = stringResource(id = R.string.add_item))
         }
     }
 }

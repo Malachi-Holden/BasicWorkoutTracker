@@ -1,11 +1,12 @@
 package com.holden.basicworkouttracker.exercise
 
 import android.annotation.SuppressLint
-import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.Serializable
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 @SuppressLint("UnsafeOptInUsageError")
 @Serializable
@@ -41,4 +42,5 @@ data class Workout(
     val weight: Double
 )
 
+@OptIn(ExperimentalTime::class)
 fun currentDate() = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
