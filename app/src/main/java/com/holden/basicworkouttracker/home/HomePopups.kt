@@ -3,6 +3,7 @@ package com.holden.basicworkouttracker.home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -33,32 +34,29 @@ import com.holden.basicworkouttracker.util.items
 import com.holden.basicworkouttracker.util.swapped
 
 @Composable
-fun DeleteGroupPopup(
+fun ConfirmationPopup(
     showPopup: Boolean,
-    deleteGroup: (String) -> Unit,
-    groupId: String?,
-    group: ExerciseGroup?,
-    onPopupClosed: () -> Unit
+    bodyText: String,
+    cancelText: String = stringResource(R.string.cancel),
+    confirmText: String,
+    onConfirmed: () -> Unit,
+    onCancelled: () -> Unit
 ) {
     ModalView(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
             .padding(5.dp),
         visible = showPopup,
-        onClose = onPopupClosed
+        onClose = onCancelled
     ) {
         Column {
-            Text(stringResource(R.string.delete_confirmation, group?.title ?: ""))
+            Text(bodyText)
             Row {
-                DefaultButton(onClick =  onPopupClosed) {
-                    Text(stringResource(R.string.cancel))
+                DefaultButton(onClick = onCancelled) {
+                    Text(cancelText)
                 }
-                DefaultButton(onClick = {
-                    if (groupId != null) {
-                        deleteGroup(groupId)
-                    }
-                }) {
-                    Text(stringResource(R.string.delete_group))
+                DefaultButton(onClick = onConfirmed) {
+                    Text(confirmText)
                 }
             }
         }
@@ -95,6 +93,7 @@ fun EditGroupPopup(
 ) {
     ModalView(
         modifier = Modifier
+            .fillMaxHeight(.8f)
             .background(MaterialTheme.colorScheme.background)
             .padding(5.dp),
         visible = showPopup,
@@ -195,7 +194,7 @@ fun EditExercisePopup(
     ModalView(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .padding(5.dp),
+            .padding(10.dp),
         visible = showPopup,
         onClose = onPopupClosed
     ) {

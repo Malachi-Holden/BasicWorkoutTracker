@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -30,7 +31,7 @@ fun ModalView(
     ) {
         Box(modifier = modifier
             .align(Alignment.Center)
-            .fillMaxSize(modalProportion)
+            .fillMaxWidth(modalProportion)
             .clickable(remember { MutableInteractionSource() }, null, onClick = {})
         ) {
             content()
