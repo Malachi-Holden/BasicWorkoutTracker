@@ -15,16 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedIconButton
@@ -32,11 +28,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.exercise.Exercise
@@ -85,12 +79,18 @@ fun HomePage(
             onFinishedEditing = mainViewModel::onEditGroupComplete,
             onPopupClosed = mainViewModel::onEditGroupPopupClosed
         )
-        DeleteGroupPopup(
+        val deletingGroupId = mainViewModel.deletingGroupId
+        val groupTitle = mainViewModel.deletingGroup?.title ?: ""
+        ConfirmationPopup(
             showPopup = mainViewModel.deletingGroup != null,
-            groupId = mainViewModel.deletingGroupId,
-            group = mainViewModel.deletingGroup,
-            deleteGroup = mainViewModel::removeGroup,
-            onPopupClosed = mainViewModel::onDeleteGroupPopopClosed
+            bodyText = stringResource(R.string.delete_group_confirmation, groupTitle),
+            confirmText = stringResource(R.string.delete_group),
+            onConfirmed = {
+                if (deletingGroupId != null) {
+                    mainViewModel.removeGroup(deletingGroupId)
+                }
+            },
+            onCancelled = mainViewModel::onDeleteGroupPopopClosed
         )
         AddExercisePopup(
             showPopup = mainViewModel.showAddExercise,

@@ -67,5 +67,6 @@
     <string name="export_data">Export</string>
     <string name="import_data">Import</string>
     <string name="corrupt_data">Data from file was corrupt</string>
-    <string name="delete_confirmation">Delete exercise group %s?</string>\
+    <string name="delete_group_confirmation">Delete exercise group %s?</string>
+    <string name="delete_exercise_confirmation">Delete exercise %s?</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.holden.basicworkouttracker.exercise
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +13,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -23,6 +22,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.pluralStringResource
@@ -31,21 +34,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.exercise.day.SetListView
+import com.holden.basicworkouttracker.home.ConfirmationPopup
 import com.holden.basicworkouttracker.ui.theme.DefaultButton
+import com.holden.basicworkouttracker.util.ModalView
 
 @Composable
 fun ExerciseView(
     exerciseViewModel: ExerciseViewModel,
-    onDaySelected: (index: Int, showCreateNewWorkout: Boolean) -> Unit
+    onDaySelected: (index: Int, showCreateNewWorkout: Boolean) -> Unit,
+    onExerciseRemoved: () -> Unit
 ) {
     val exercise = exerciseViewModel.exerciseState
         ?: return EmptyExerciseView()
     Box(modifier = Modifier.fillMaxSize()) {
+        var showDeleteExerciseConfirmation by remember { mutableStateOf(false) }
         Column(modifier = Modifier.fillMaxSize()) {
-            Text(
-                text = exercise.title,
-                style = MaterialTheme.typography.displayLarge,
-                modifier = Modifier.padding(15.dp)
+            TextField(
+                modifier = Modifier.padding(15.dp),
+                value = exercise.title,
+                onValueChange = exerciseViewModel::updateTitle,
+                textStyle = MaterialTheme.typography.displayLarge,
+                placeholder = { Text(text = stringResource(R.string.name)) }
             )
 
             TextField(
@@ -81,7 +90,7 @@ fun ExerciseView(
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(start = 15.dp, top = 15.dp)
             )
-            val deleteIndex = exerciseViewModel.deleteIndex
+            val deleteDayIndex = exerciseViewModel.deleteDayIndex
             LazyColumn(
                 modifier = Modifier.padding(start = 15.dp)
             ) {
@@ -108,7 +117,7 @@ fun ExerciseView(
                                 exerciseForDay.sets.size
                             ))
                         }
-                        if (deleteIndex == dayIndex) {
+                        if (deleteDayIndex == dayIndex) {
                             IconButton(onClick = {
                                 exerciseViewModel.removeDay(dayIndex)
                             }
@@ -119,6 +128,19 @@ fun ExerciseView(
                                 )
                             }
                         }
+                    }
+                }
+                item {
+                    DefaultButton(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            contentColor = MaterialTheme.colorScheme.onSecondary
+                        ),
+                        onClick = {
+                            showDeleteExerciseConfirmation = true
+                        }
+                    ) {
+                        Text(stringResource(R.string.delete_exercise))
                     }
                 }
             }
@@ -139,6 +161,20 @@ fun ExerciseView(
                 Text(text = stringResource(id = R.string.new_day))
             }
         }
+
+        ConfirmationPopup(
+            showPopup = showDeleteExerciseConfirmation,
+            onConfirmed = {
+                showDeleteExerciseConfirmation = false
+                exerciseViewModel.deleteExercise()
+                onExerciseRemoved()
+            },
+            bodyText = stringResource(R.string.delete_exercise_confirmation, exercise.title),
+            confirmText = stringResource(R.string.delete_exercise),
+            onCancelled = {
+                showDeleteExerciseConfirmation = false
+            }
+        )
     }
 
 }

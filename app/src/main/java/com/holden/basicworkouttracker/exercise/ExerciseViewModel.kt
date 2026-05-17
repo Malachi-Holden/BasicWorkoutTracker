@@ -6,7 +6,6 @@ import com.holden.basicworkouttracker.exercise.day.DayViewModel
 import com.holden.basicworkouttracker.util.OrderedMap
 import com.holden.basicworkouttracker.util.bindNullable
 import com.holden.basicworkouttracker.util.removed
-import com.holden.basicworkouttracker.util.replaced
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -23,9 +22,15 @@ class ExerciseViewModel(
         @Composable
         get() = exercises.collectAsState().value[exerciseKey.collectAsState().value]
 
-    val deleteIndex: Int?
+    val deleteDayIndex: Int?
         @Composable
         get() = _deleteIndex.collectAsState().value
+
+    private val _showDeletePopoup = MutableStateFlow(false)
+
+    val showDeletePopup: Boolean
+        @Composable
+        get() = _showDeletePopoup.collectAsState().value
 
     fun dayViewModel(dayIndex: Int?) = DayViewModel(
         exerciseKey,
@@ -67,5 +72,21 @@ class ExerciseViewModel(
             exercise.copy(notes = newNotes),
             exerciseKey.value.bind()
         )
+    }?.let(setExercises)
+
+    fun updateTitle(newTitle: String) = bindNullable {
+        val exercise = exercises.value[exerciseKey.value].bind()
+        exercises.value.replace(
+            exercise.copy(title = newTitle),
+            exerciseKey.value.bind()
+        )
+    }?.let(setExercises)
+
+    fun deleteExerciseButtonClicked() {
+        _showDeletePopoup.value = true
+    }
+
+    fun deleteExercise() = bindNullable {
+        exercises.value.remove(exerciseKey.value.bind())
     }?.let(setExercises)
 }

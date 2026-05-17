@@ -29,10 +29,13 @@ fun MainNavHost(
     }
     NavHost(navController = navController, startDestination = Nav.Home.name) {
         composable(Nav.Home.name) {
-            HomePage(mainViewModel = mainViewModel, showExercise = {
-                exerciseViewModel.exerciseKey.value = it
-                navController.navigate(Nav.Exercise.name)
-            })
+            HomePage(
+                mainViewModel = mainViewModel,
+                showExercise = {
+                    exerciseViewModel.exerciseKey.value = it
+                    navController.navigate(Nav.Exercise.name)
+                }
+            )
         }
         composable(Nav.Exercise.name) {
             ExerciseView(
@@ -41,6 +44,9 @@ fun MainNavHost(
                     exerciseViewModel.showNewWorkoutOnNavigate = showCreateWorkout
                     dayIndex = index
                     navController.navigate(Nav.Day.name)
+                },
+                onExerciseRemoved = {
+                    navController.popBackStack()
                 }
             )
         }
