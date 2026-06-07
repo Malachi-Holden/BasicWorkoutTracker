@@ -14,9 +14,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
@@ -29,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.unit.dp
@@ -324,7 +322,8 @@ fun GroupView(
             text = group.title,
             style = LocalTextStyle.current.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
-        OutlinedIconButton(modifier = Modifier.align(Alignment.TopEnd)
+        OutlinedIconButton(modifier = Modifier
+            .align(Alignment.TopEnd)
             .padding(end = 75.dp)
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 3.dp),
@@ -333,9 +332,13 @@ fun GroupView(
                 deleteGroup(groupId)
             }
         ) {
-            Icon(Icons.Default.Delete, stringResource(R.string.delete_group))
+            Icon(
+                painter = painterResource(R.drawable.delete),
+                stringResource(R.string.delete_group)
+            )
         }
-        OutlinedIconButton(modifier = Modifier.align(Alignment.TopEnd)
+        OutlinedIconButton(modifier = Modifier
+            .align(Alignment.TopEnd)
             .padding(end = 25.dp)
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 3.dp),
@@ -344,7 +347,10 @@ fun GroupView(
                 editGroup(groupId)
             }
         ) {
-            Icon(Icons.Default.Edit, stringResource(R.string.edit))
+            Icon(
+                painter = painterResource(R.drawable.edit),
+                stringResource(R.string.edit)
+            )
         }
     }
 }

@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.holden.basicworkouttracker.di.Persistence
 import com.holden.basicworkouttracker.exercise.Exercise
 import com.holden.basicworkouttracker.exercise.ExerciseGroup
 import com.holden.basicworkouttracker.exercise.ExerciseViewModel
@@ -15,19 +17,21 @@ import com.holden.basicworkouttracker.util.bindNullable
 import com.holden.basicworkouttracker.util.map
 import com.holden.basicworkouttracker.util.swap
 import com.holden.basicworkouttracker.util.toOrderedMap
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.util.UUID
+import javax.inject.Inject
 
-class MainViewModel(
-    initialGroups: OrderedMap<String, ExerciseGroup>,
-    initialExercises: OrderedMap<String, Exercise>,
-    val saveExercises: (OrderedMap<String, Exercise>) -> Unit,
-    val saveGroups: (OrderedMap<String, ExerciseGroup>) -> Unit
+@HiltViewModel
+class MainViewModel @Inject constructor (
+    persistence: Persistence,
 ): ViewModel() {
-    val groupsFlow = MutableStateFlow(initialGroups)
-    val exercisesFlow = MutableStateFlow(initialExercises)
+    private val saveExercises = persistence.saveExercises
+    private val saveGroups = persistence.saveGroups
+    private val groupsFlow = MutableStateFlow(persistence.initialGroups)
+    private val exercisesFlow = MutableStateFlow(persistence.initialExercises)
 
-    val _editMode = MutableStateFlow(false)
+    private val _editMode = MutableStateFlow(false)
     val editMode: Boolean
         @Composable
         get() = _editMode.collectAsState().value
@@ -94,12 +98,12 @@ class MainViewModel(
 
     private fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
         exercisesFlow.value = newExercises
-        saveExercises(newExercises)
+        saveExercises(viewModelScope, newExercises)
     }
 
     private fun updateGroups(newGroups: OrderedMap<String, ExerciseGroup>) {
         groupsFlow.value = newGroups
-        saveGroups(newGroups)
+        saveGroups(viewModelScope, newGroups)
     }
 
     fun editButtonClicked() {

@@ -1,13 +1,11 @@
 package com.holden.basicworkouttracker
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.holden.basicworkouttracker.exercise.day.ExerciseForDayView
 import com.holden.basicworkouttracker.exercise.ExerciseView
 import com.holden.basicworkouttracker.home.HomePage
@@ -19,14 +17,11 @@ enum class Nav {
 
 @Composable
 fun MainNavHost(
-    mainViewModel: MainViewModel,
-    navController: NavHostController
+    mainViewModel: MainViewModel = viewModel(),
+    navController: NavHostController = rememberNavController()
 ) {
     val exerciseViewModel = mainViewModel.exerciseViewModel
 
-    var dayIndex by remember {
-        mutableStateOf<Int?>(null)
-    }
     NavHost(navController = navController, startDestination = Nav.Home.name) {
         composable(Nav.Home.name) {
             HomePage(
@@ -40,9 +35,7 @@ fun MainNavHost(
         composable(Nav.Exercise.name) {
             ExerciseView(
                 exerciseViewModel = exerciseViewModel,
-                onDaySelected = { index, showCreateWorkout ->
-                    exerciseViewModel.showNewWorkoutOnNavigate = showCreateWorkout
-                    dayIndex = index
+                navigateToDay = {
                     navController.navigate(Nav.Day.name)
                 },
                 onExerciseRemoved = {
@@ -51,7 +44,7 @@ fun MainNavHost(
             )
         }
         composable(Nav.Day.name) {
-            ExerciseForDayView(exerciseViewModel.dayViewModel(dayIndex))
+            ExerciseForDayView(exerciseViewModel.dayViewModel())
         }
     }
 }
