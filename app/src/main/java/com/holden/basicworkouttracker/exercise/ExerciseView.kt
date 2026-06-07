@@ -34,12 +34,11 @@ import com.holden.basicworkouttracker.R
 import com.holden.basicworkouttracker.exercise.day.SetListView
 import com.holden.basicworkouttracker.home.ConfirmationPopup
 import com.holden.basicworkouttracker.ui.theme.DefaultButton
-import com.holden.basicworkouttracker.util.ModalView
 
 @Composable
 fun ExerciseView(
     exerciseViewModel: ExerciseViewModel,
-    onDaySelected: (index: Int, showCreateNewWorkout: Boolean) -> Unit,
+    navigateToDay: () -> Unit,
     onExerciseRemoved: () -> Unit
 ) {
     val exercise = exerciseViewModel.exerciseState
@@ -103,7 +102,10 @@ fun ExerciseView(
                     ) {
                         DefaultButton(
                             modifier = Modifier.fillMaxWidth(.6f),
-                            onClick = { onDaySelected(dayIndex, false) }
+                            onClick = {
+                                exerciseViewModel.onDaySelected(dayIndex, false)
+                                navigateToDay()
+                            }
                         ) {
                             Text(
                                 modifier = Modifier.weight(1f),
@@ -151,7 +153,8 @@ fun ExerciseView(
             onClick = {
                 val day = ExerciseForDay("", currentDate(), listOf())
                 exerciseViewModel.addDay(day)
-                onDaySelected(0, true)
+                exerciseViewModel.onDaySelected(0, true)
+                navigateToDay()
             }
         ) {
             Row(modifier = Modifier.padding(10.dp)) {

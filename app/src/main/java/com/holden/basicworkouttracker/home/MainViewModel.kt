@@ -26,12 +26,12 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor (
     persistence: Persistence,
 ): ViewModel() {
-    val saveExercises = persistence.saveExercises
-    val saveGroups = persistence.saveGroups
-    val groupsFlow = MutableStateFlow(persistence.initialGroups)
-    val exercisesFlow = MutableStateFlow(persistence.initialExercises)
+    private val saveExercises = persistence.saveExercises
+    private val saveGroups = persistence.saveGroups
+    private val groupsFlow = MutableStateFlow(persistence.initialGroups)
+    private val exercisesFlow = MutableStateFlow(persistence.initialExercises)
 
-    val _editMode = MutableStateFlow(false)
+    private val _editMode = MutableStateFlow(false)
     val editMode: Boolean
         @Composable
         get() = _editMode.collectAsState().value

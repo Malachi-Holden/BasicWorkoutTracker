@@ -16,6 +16,7 @@ class ExerciseViewModel(
 ) {
 
     private val _deleteIndex: MutableStateFlow<Int?> = MutableStateFlow(null)
+    private var _dayIndex: Int? = null
 
     var showNewWorkoutOnNavigate = false
     val exerciseState: Exercise?
@@ -26,15 +27,9 @@ class ExerciseViewModel(
         @Composable
         get() = _deleteIndex.collectAsState().value
 
-    private val _showDeletePopoup = MutableStateFlow(false)
-
-    val showDeletePopup: Boolean
-        @Composable
-        get() = _showDeletePopoup.collectAsState().value
-
-    fun dayViewModel(dayIndex: Int?) = DayViewModel(
+    fun dayViewModel() = DayViewModel(
         exerciseKey,
-        dayIndex,
+        _dayIndex,
         exercises,
         setExercises,
         showNewWorkoutOnNavigate
@@ -82,11 +77,12 @@ class ExerciseViewModel(
         )
     }?.let(setExercises)
 
-    fun deleteExerciseButtonClicked() {
-        _showDeletePopoup.value = true
-    }
-
     fun deleteExercise() = bindNullable {
         exercises.value.remove(exerciseKey.value.bind())
     }?.let(setExercises)
+
+    fun onDaySelected(dayIndex: Int?, showCreateNewWorkout: Boolean) {
+        _dayIndex = dayIndex
+        showNewWorkoutOnNavigate = showCreateNewWorkout
+    }
 }

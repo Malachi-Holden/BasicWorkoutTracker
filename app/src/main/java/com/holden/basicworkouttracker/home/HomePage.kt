@@ -322,7 +322,8 @@ fun GroupView(
             text = group.title,
             style = LocalTextStyle.current.copy(platformStyle = PlatformTextStyle(includeFontPadding = false))
         )
-        OutlinedIconButton(modifier = Modifier.align(Alignment.TopEnd)
+        OutlinedIconButton(modifier = Modifier
+            .align(Alignment.TopEnd)
             .padding(end = 75.dp)
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 3.dp),
@@ -336,7 +337,8 @@ fun GroupView(
                 stringResource(R.string.delete_group)
             )
         }
-        OutlinedIconButton(modifier = Modifier.align(Alignment.TopEnd)
+        OutlinedIconButton(modifier = Modifier
+            .align(Alignment.TopEnd)
             .padding(end = 25.dp)
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 3.dp),
