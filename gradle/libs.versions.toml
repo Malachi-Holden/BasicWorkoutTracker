@@ -1,7 +1,6 @@
 [versions]
 documentFile = "1.1.0"
 serialization = "1.11.0"
-pluginSerialization = "2.0.0"
 recyclerview = "1.4.0"
 datetime = "0.8.0"
 navigation = "2.9.8"
@@ -50,6 +49,5 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 android-application = { id = "com.android.application", version.ref = "pluginApplication" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android" , version.ref = "plguinKotlinAndroid"}
 jetbrains-kotlin-plugin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "composePlugin" }
-plugin-serialization = { id = "plugin.serialization", version.ref = "pluginSerialization" }
 devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
