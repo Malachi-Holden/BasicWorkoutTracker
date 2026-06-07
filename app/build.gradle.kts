@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.jetbrains.kotlin.plugin.compose)
-    kotlin("plugin.serialization") version "2.0.0" apply false
+    kotlin("plugin.serialization") version "2.0.0"
     alias(libs.plugins.devtools.ksp)
     alias(libs.plugins.dagger.hilt.android)
 }
