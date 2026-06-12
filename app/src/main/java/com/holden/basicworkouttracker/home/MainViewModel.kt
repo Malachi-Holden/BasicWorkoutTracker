@@ -26,26 +26,26 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor (
     persistence: Persistence,
 ): ViewModel() {
-    private val saveExercises = persistence.saveExercises
-    private val saveGroups = persistence.saveGroups
-    private val groupsFlow = MutableStateFlow(persistence.initialGroups)
-    private val exercisesFlow = MutableStateFlow(persistence.initialExercises)
+    val saveExercises = persistence.saveExercises
+    val saveGroups = persistence.saveGroups
+    val _groupsFlow = MutableStateFlow(persistence.initialGroups)
+    val _exercisesFlow = MutableStateFlow(persistence.initialExercises)
 
-    private val _editMode = MutableStateFlow(false)
+    val _editMode = MutableStateFlow(false)
     val editMode: Boolean
         @Composable
         get() = _editMode.collectAsState().value
 
     val groupsAsState: OrderedMap<String, ExerciseGroup>
         @Composable
-        get() = groupsFlow.collectAsState().value
+        get() = _groupsFlow.collectAsState().value
     val exercisesAsState: OrderedMap<String, Exercise>
         @Composable
-        get() = exercisesFlow.collectAsState().value
+        get() = _exercisesFlow.collectAsState().value
 
     val exerciseViewModel: ExerciseViewModel = ExerciseViewModel(
         MutableStateFlow(null),
-        exercisesFlow,
+        _exercisesFlow,
         ::updateExercises
     )
 
@@ -97,12 +97,12 @@ class MainViewModel @Inject constructor (
     }
 
     private fun updateExercises(newExercises: OrderedMap<String, Exercise>) {
-        exercisesFlow.value = newExercises
+        _exercisesFlow.value = newExercises
         saveExercises(viewModelScope, newExercises)
     }
 
     private fun updateGroups(newGroups: OrderedMap<String, ExerciseGroup>) {
-        groupsFlow.value = newGroups
+        _groupsFlow.value = newGroups
         saveGroups(viewModelScope, newGroups)
     }
 
@@ -162,49 +162,49 @@ class MainViewModel @Inject constructor (
     fun addGroup(group: ExerciseGroup) {
         val uuid = UUID.randomUUID().toString()
         updateGroups(
-            groupsFlow.value.append(uuid to group)
+            _groupsFlow.value.append(uuid to group)
         )
         updateExtraExercises()
     }
 
     fun toggleGroupCollapsed(uuid: String) = bindNullable {
-        val group = groupsFlow.value[uuid].bind()
+        val group = _groupsFlow.value[uuid].bind()
         editGroup(uuid, group.copy(
             collapsed = !group.collapsed
         ))
     }
 
-    private fun editGroup(uuid: String, newGroup: ExerciseGroup) {
+    fun editGroup(uuid: String, newGroup: ExerciseGroup) {
         updateGroups(
-            groupsFlow.value.replace(newGroup, uuid)
+            _groupsFlow.value.replace(newGroup, uuid)
         )
         updateExtraExercises()
     }
 
     fun editExercise(uuid: String, newExercise: Exercise) {
         updateExercises(
-            exercisesFlow.value.replace(newExercise, uuid)
+            _exercisesFlow.value.replace(newExercise, uuid)
         )
     }
 
     fun addExercise(exercise: Exercise) {
         val uuid = UUID.randomUUID().toString()
         updateExercises(
-            exercisesFlow.value.append(uuid to exercise)
+            _exercisesFlow.value.append(uuid to exercise)
         )
     }
 
     fun removeGroup(groupKey: String) {
         updateGroups(
-            groupsFlow.value.remove(groupKey)
+            _groupsFlow.value.remove(groupKey)
         )
         updateExtraExercises()
     }
 
     fun updateExtraExercises() {
-        val noShowSet = groupsFlow.value.values.flatMap { it.exerciseIds }.toSet()
+        val noShowSet = _groupsFlow.value.values.flatMap { it.exerciseIds }.toSet()
         updateExercises(
-            exercisesFlow.value.map { key, exercise ->
+            _exercisesFlow.value.map { key, exercise ->
                 key to exercise.copy(showOnHomepage = key !in noShowSet)
             }
         )
@@ -212,19 +212,19 @@ class MainViewModel @Inject constructor (
 
     fun removeExercise(exerciseKey: String) {
         updateExercises(
-            exercisesFlow.value.remove(exerciseKey)
+            _exercisesFlow.value.remove(exerciseKey)
         )
     }
 
     fun swapGroups(startIndex: Int, endIndex: Int) {
         updateGroups(
-            groupsFlow.value.swap(startIndex, endIndex)
+            _groupsFlow.value.swap(startIndex, endIndex)
         )
     }
 
     fun swapExercises(startIndex: Int, endIndex: Int) {
         updateExercises(
-            exercisesFlow.value.swap(startIndex, endIndex)
+            _exercisesFlow.value.swap(startIndex, endIndex)
         )
     }
 }
